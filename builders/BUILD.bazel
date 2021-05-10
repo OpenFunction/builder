@@ -23,8 +23,8 @@ package_group(
     name = "go_builders",
     packages = [
         "//builders/base",
-        "//builders/go115"
-        "//builders/go116"
+        "//builders/go115",
+        "//builders/go116",
     ],
 )
 

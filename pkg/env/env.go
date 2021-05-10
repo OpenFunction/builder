@@ -94,6 +94,8 @@ const (
 	// GoLDFlags is an env var used to pass through linker flags to the Go linker.
 	// Example: `-s -w` is sometimes used to strip and reduce binary size.
 	GoLDFlags = "FUNC_GOLDFLAGS"
+	// GoProxy is an env var used to proxy go mod
+	GoProxy = "FUNC_GOPROXY"
 
 	// UseNativeImage is used to enable the GraalVM Java buildpack for native image compilation.
 	// Example: `true`, `True`, `1` will enable development mode.
