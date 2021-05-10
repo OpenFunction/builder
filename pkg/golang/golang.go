@@ -16,6 +16,8 @@
 package golang
 
 import (
+	"github.com/GoogleCloudPlatform/buildpacks/pkg/env"
+	"os"
 	"path/filepath"
 	"regexp"
 	"strings"
@@ -148,7 +150,10 @@ var readGoMod = func(ctx *gcp.Context) string {
 // For newer versions of Go, we take advantage of the "pipe" character which has the same effect.
 func ExecWithGoproxyFallback(ctx *gcp.Context, cmd []string, opts ...gcp.ExecOption) *gcp.ExecResult {
 	if SupportsGoProxyFallback(ctx) {
-		opts = append(opts, gcp.WithEnv("GOPROXY=https://proxy.golang.org|direct"))
+		goProxy := os.Getenv(env.GoProxy)
+		if goProxy != "" {
+			opts = append(opts, gcp.WithEnv(goProxy))
+		}
 		return ctx.Exec(cmd, opts...)
 	}
 

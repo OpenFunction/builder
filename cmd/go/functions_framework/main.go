@@ -117,7 +117,7 @@ func createMainGoMod(ctx *gcp.Context, fn fnInfo) error {
 		golang.ExecWithGoproxyFallback(ctx, []string{"go", "mod", "tidy"}, gcp.WithWorkDir(fn.Source))
 	}
 
-	fnMod := ctx.Exec([]string{"go", "list", "-m"}, gcp.WithWorkDir(fn.Source)).Stdout
+	fnMod := golang.ExecWithGoproxyFallback(ctx, []string{"go", "list", "-m"}, gcp.WithWorkDir(fn.Source)).Stdout
 	// golang.org/ref/mod requires that package names in a replace contains at least one dot.
 	if parts := strings.Split(fnMod, "/"); len(parts) > 0 && !strings.Contains(parts[0], ".") {
 		return gcp.UserErrorf("the module path in the function's go.mod must contain a dot in the first path element before a slash, e.g. example.com/module, found: %s", fnMod)
