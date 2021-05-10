@@ -51,3 +51,33 @@ INFO: Build completed successfully, 7 total actions
 Executed 1 out of 1 test: 1 test passes.
 INFO: Build completed successfully, 7 total actions
 ```
+
+### Run
+
+Download gcp samples:
+
+```shell
+git clone https://github.com/GoogleCloudPlatform/buildpack-samples.git
+```
+
+Build the function:
+
+> Add `--network host` to pack and docker command if they cannot reach internet.
+
+```shell
+cd buildpack-samples/sample-functions-framework-go/
+pack build function-go --builder of/go115 --env FUNC_TARGET="HelloWorld"
+docker run --rm -p8080:8080 function-go
+```
+
+Visit the function:
+
+```shell
+curl http://localhost:8080
+```
+
+Output example:
+
+```shell
+hello, world
+```
