@@ -1,0 +1,32 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_binary")
+
+# Buildpack for the Java runtime.
+load("//tools:defs.bzl", "buildpack")
+
+licenses(["notice"])
+
+buildpack(
+    name = "appengine",
+    executables = [
+        ":main",
+    ],
+    visibility = [
+        "//builders:dotnet_builders",
+    ],
+)
+
+go_binary(
+    name = "main",
+    srcs = ["main.go"],
+    # Strip debugging information to reduce binary size.
+    gc_linkopts = [
+        "-s",
+        "-w",
+    ],
+    deps = [
+        "//pkg/appengine",
+        "//pkg/appstart",
+        "//pkg/env",
+        "//pkg/gcpbuildpack",
+    ],
+)

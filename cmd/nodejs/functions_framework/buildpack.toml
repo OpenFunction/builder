@@ -1,0 +1,21 @@
+api = "0.2"
+
+[buildpack]
+id = "google.nodejs.functions-framework"
+version = "0.9.1"
+name = "Node.js - Functions Framework"
+
+[[stacks]]
+id = "google"
+
+[[stacks]]
+id = "google.nodejs10"
+
+[[stacks]]
+id = "google.nodejs12"
+
+[[stacks]]
+id = "google.nodejs14"
+
+[[stacks]]
+id = "google.nodejs16"

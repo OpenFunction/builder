@@ -1,0 +1,54 @@
+description = "Ubuntu 18 base image with buildpacks for .NET, Go, Java, Node.js, and Python"
+
+[[buildpacks]]
+  id = "google.config.entrypoint"
+  uri = "entrypoint.tgz"
+
+[[buildpacks]]
+  id = "google.go.functions-framework"
+  uri = "go/functions_framework.tgz"
+
+[[buildpacks]]
+  id = "google.go.clear_source"
+  uri = "go/clear_source.tgz"
+
+[[buildpacks]]
+  id = "google.go.build"
+  uri = "go/build.tgz"
+
+[[buildpacks]]
+  id = "google.utils.label"
+  uri = "label.tgz"
+
+######
+# Go #
+######
+
+[[order]]
+
+  [[order.group]]
+    id = "google.go.functions-framework"
+
+  [[order.group]]
+    id = "google.go.build"
+
+  [[order.group]]
+    id = "google.config.entrypoint"
+    optional = true
+
+  [[order.group]]
+    id = "google.go.clear_source"
+    optional = true
+
+  [[order.group]]
+    id = "google.utils.label"
+
+
+# Currently built with //builders/go115/stack/stack:build.
+[stack]
+  id = "google"
+  build-image = "openfunctiondev/buildpacks/go115/build:v1"
+  run-image = "openfunctiondev/buildpacks/go115/run:v1"
+
+[lifecycle]
+  version = "0.11.1"

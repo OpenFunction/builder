@@ -1,0 +1,40 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+licenses(["notice"])
+
+go_library(
+    name = "appengine",
+    srcs = [
+        "appengine.go",
+    ],
+    importpath = "github.com/GoogleCloudPlatform/buildpacks/" + package_name(),
+    visibility = [
+        "//builders/gae:__subpackages__",
+        "//cmd/dotnet:__subpackages__",
+        "//cmd/go:__subpackages__",
+        "//cmd/java:__subpackages__",
+        "//cmd/nodejs:__subpackages__",
+        "//cmd/php:__subpackages__",
+        "//cmd/python:__subpackages__",
+        "//cmd/ruby:__subpackages__",
+        "//pkg:__subpackages__",
+    ],
+    deps = [
+        "//pkg/appstart",
+        "//pkg/env",
+        "//pkg/gcpbuildpack",
+    ],
+)
+
+go_test(
+    name = "appengine_test",
+    size = "small",
+    srcs = ["appengine_test.go"],
+    embed = [":appengine"],
+    rundir = ".",
+    deps = [
+        "//pkg/appstart",
+        "//pkg/gcpbuildpack",
+        "@com_github_buildpacks_libcnb//:go_default_library",
+    ],
+)

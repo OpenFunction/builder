@@ -1,0 +1,9 @@
+api = "0.2"
+
+[buildpack]
+id = "google.java.runtime"
+version = "0.9.1"
+name = "Java - Runtime"
+
+[[stacks]]
+id = "google"
