@@ -24,6 +24,7 @@ package_group(
     packages = [
         "//builders/base",
         "//builders/go115"
+        "//builders/go116"
     ],
 )
 

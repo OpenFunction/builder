@@ -1,41 +1,41 @@
 ## Build builder of go version 1.15
 
-### Build go115 stack
+### Build go116 stack
 
 ```shell
-bazel run //builders/go115/stack:build
+bazel run //builders/go116/stack:build
 ```
 
 This command creates two images:
 
 ```shell
-openfunctiondev/buildpacks/go115/run:v1
-openfunctiondev/buildpacks/go115/build:v1
+openfunctiondev/buildpacks/go116/run:v1
+openfunctiondev/buildpacks/go116/build:v1
 ```
 
-### Build go115 builder
+### Build go116 builder
 
 ```shell
-bazel build //builders/go115:builder.image
+bazel build //builders/go116:builder.image
 ```
 
 This command creates one image:
 
 ```shell
-of/go115
+of/go116
 ```
 
 Tag and push:
 
 ```shell
-docker tag of/go115 <your container registry>/go115:v1
-docker push <your container registry>/go115:v1
+docker tag of/go116 <your container registry>/go116:v1
+docker push <your container registry>/go116:v1
 ```
 
 ### Test
 
 ```shell
-bazel test //builders/go115/acceptance/...
+bazel test //builders/go116/acceptance/...
 ```
 
 Output example:
@@ -46,7 +46,7 @@ INFO: Found 1 target and 1 test target...
 INFO: Elapsed time: 36.640s, Critical Path: 36.47s
 INFO: 7 processes: 1 internal, 5 linux-sandbox, 1 local.
 INFO: Build completed successfully, 7 total actions
-//builders/go115/acceptance:go_fn_test                                   PASSED in 35.4s
+//builders/go116/acceptance:go_fn_test                                   PASSED in 35.4s
 
 Executed 1 out of 1 test: 1 test passes.
 INFO: Build completed successfully, 7 total actions
@@ -66,7 +66,7 @@ Build the function:
 
 ```shell
 cd buildpack-samples/sample-functions-framework-go/
-pack build function-go --builder of/go115 --env FUNC_TARGET="HelloWorld"
+pack build function-go --builder of/go116 --env FUNC_TARGET="HelloWorld"
 docker run --rm -p8080:8080 function-go
 ```
 
