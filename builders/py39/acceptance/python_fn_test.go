@@ -23,17 +23,17 @@ func init() {
 	acceptance.DefineFlags()
 }
 
-func TestAcceptanceGoFn(t *testing.T) {
+func TestAcceptancePythonFn(t *testing.T) {
 	builder, cleanup := acceptance.CreateBuilder(t)
 	t.Cleanup(cleanup)
 
 	testCases := []acceptance.Test{
 		{
 			Name:       "function with framework",
-			App:        "with_framework_go_sum",
-			Path:       "/Func",
-			Env:        []string{"FUNC_NAME=Func"},
-			MustUse:    []string{goFF, goBuild},
+			App:        "with_framework",
+			Path:       "/testFunction",
+			Env:        []string{"FUNC_NAME=testFunction"},
+			MustUse:    []string{pythonPIP, pythonFF},
 			MustNotUse: []string{entrypoint},
 		},
 	}
@@ -43,6 +43,35 @@ func TestAcceptanceGoFn(t *testing.T) {
 			t.Parallel()
 
 			acceptance.TestApp(t, builder, tc)
+		})
+	}
+}
+
+func TestFailuresPythonFn(t *testing.T) {
+	builder, cleanup := acceptance.CreateBuilder(t)
+	t.Cleanup(cleanup)
+
+	testCases := []acceptance.FailureTest{
+		{
+			Name:      "missing framework file",
+			App:       "with_framework",
+			Env:       []string{"FUNC_NAME=testFunction", "FUNC_SRC=func.py"},
+			MustMatch: `FUNC_SRC specified file "func.py" but it does not exist`,
+		},
+		{
+			Name:      "missing main.py",
+			App:       "custom_file",
+			Env:       []string{"FUNC_NAME=testFunction"},
+			MustMatch: "missing main.py and FUNC_SRC not specified. Either create the function in main.py or specify FUNC_SRC to point to the file that contains the function",
+		},
+	}
+
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.Name, func(t *testing.T) {
+			t.Parallel()
+
+			acceptance.TestBuildFailure(t, builder, tc)
 		})
 	}
 }

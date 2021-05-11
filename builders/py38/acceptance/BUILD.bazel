@@ -9,20 +9,20 @@ go_library(
 )
 
 go_test(
-    name = "go_fn_test",
+    name = "python_fn_test",
     size = "enormous",
-    srcs = ["go_fn_test.go"],
+    srcs = ["python_fn_test.go"],
     args = [
-        "-test-data=$(location //builders/testdata/go:functions)",
+        "-test-data=$(location //builders/testdata/python:functions)",
         "-structure-test-config=$(location :config.yaml)",
-        "-builder-source=$(location //builders/go116:builder.tar)",
-        "-builder-prefix=gcpbase-go-fn-test-",
+        "-builder-source=$(location //builders/py38:builder.tar)",
+        "-builder-prefix=gcpbase-python-fn-test-",
         "-pull-images=false",
     ],
     data = [
         ":config.yaml",
-        "//builders/go116:builder.tar",
-        "//builders/testdata/go:functions",
+        "//builders/py38:builder.tar",
+        "//builders/testdata/python:functions",
     ],
     embed = [":acceptance"],
     rundir = ".",

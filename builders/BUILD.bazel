@@ -53,6 +53,9 @@ package_group(
     name = "python_builders",
     packages = [
         "//builders/base",
+        "//builders/py37",
+        "//builders/py38",
+        "//builders/py39",
     ],
 )
 

@@ -9,8 +9,8 @@ bazel run //builders/go115/stack:build
 This command creates two images:
 
 ```shell
-openfunctiondev/buildpacks/go115/run:v1
-openfunctiondev/buildpacks/go115/build:v1
+openfunctiondev/buildpacks-go115-run:v1
+openfunctiondev/buildpacks-go115-build:v1
 ```
 
 ### Build go115 builder
@@ -66,7 +66,7 @@ Build the function:
 
 ```shell
 cd buildpack-samples/sample-functions-framework-go/
-pack build function-go --builder of/go115 --env FUNC_TARGET="HelloWorld"
+pack build function-go --builder of/go115 --env FUNC_NAME="HelloWorld"
 docker run --rm -p8080:8080 function-go
 ```
 
