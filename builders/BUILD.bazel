@@ -39,6 +39,10 @@ package_group(
     name = "nodejs_builders",
     packages = [
         "//builders/base",
+        "//builders/node10",
+        "//builders/node12",
+        "//builders/node14",
+        "//builders/node16",
     ],
 )
 

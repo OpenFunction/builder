@@ -1,0 +1,83 @@
+description = "Ubuntu 18 base image with buildpacks for Nodejs"
+
+[[buildpacks]]
+  id = "google.config.entrypoint"
+  uri = "entrypoint.tgz"
+
+[[buildpacks]]
+  id = "google.nodejs.npm"
+  uri = "nodejs/npm.tgz"
+
+[[buildpacks]]
+  id = "google.nodejs.yarn"
+  uri = "nodejs/yarn.tgz"
+
+[[buildpacks]]
+  id = "google.nodejs.functions-framework"
+  uri = "nodejs/functions_framework.tgz"
+
+[[buildpacks]]
+  id = "google.utils.label"
+  uri = "label.tgz"
+
+###########
+# Node.js #
+###########
+# Note: We detect Node.js last because client-side .js files exist in many
+# web projects and detecting Node.js last will decrease the chance of
+# detection confusion.
+
+[[order]]
+  [[order.group]]
+    id = "google.nodejs.yarn"
+
+  [[order.group]]
+    id = "google.nodejs.functions-framework"
+    optional = true
+
+  [[order.group]]
+    id = "google.config.entrypoint"
+    optional = true
+
+  [[order.group]]
+    id = "google.utils.label"
+
+[[order]]
+  [[order.group]]
+    id = "google.nodejs.npm"
+
+  [[order.group]]
+    id = "google.nodejs.functions-framework"
+    optional = true
+
+  [[order.group]]
+    id = "google.config.entrypoint"
+    optional = true
+
+  [[order.group]]
+    id = "google.utils.label"
+
+# Separate groups for Node.js projects without dependencies.
+# Making both yarn and npm optional in the previous groups leads
+# the yarn group to opt in every time.
+
+# Node.js functions without a package.json.
+[[order]]
+  [[order.group]]
+    id = "google.nodejs.functions-framework"
+
+  [[order.group]]
+    id = "google.config.entrypoint"
+    optional = true
+
+  [[order.group]]
+    id = "google.utils.label"
+
+# Currently built with //builders/node14/stack/stack:build.
+[stack]
+  id = "google"
+  build-image = "openfunctiondev/buildpacks-node14-build:v1"
+  run-image = "openfunctiondev/buildpacks-node14-run:v1"
+
+[lifecycle]
+  version = "0.11.1"
