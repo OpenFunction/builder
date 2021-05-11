@@ -32,6 +32,7 @@ package_group(
     name = "java_builders",
     packages = [
         "//builders/base",
+        "//builders/java11",
     ],
 )
 
