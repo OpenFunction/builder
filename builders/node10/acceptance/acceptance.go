@@ -12,36 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+// Package acceptance implements acceptance tests for a buildpack builder.
+package acceptance
 
-import (
-	"testing"
-
-	gcp "github.com/GoogleCloudPlatform/buildpacks/pkg/gcpbuildpack"
+const (
+	// Buildpack identifiers used to verify that buildpacks were or were not used.
+	entrypoint      = "google.config.entrypoint"
+	nodeFF          = "google.nodejs.functions-framework"
+	nodeNPM         = "google.nodejs.npm"
+	nodeYarn        = "google.nodejs.yarn"
 )
-
-func TestDetect(t *testing.T) {
-	testCases := []struct {
-		name  string
-		files map[string]string
-		want  int
-	}{
-		{
-			name: "py files",
-			files: map[string]string{
-				"main.py": "",
-			},
-			want: 0,
-		},
-		{
-			name:  "no py files",
-			files: map[string]string{},
-			want:  100,
-		},
-	}
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			gcp.TestDetect(t, detectFn, tc.name, tc.files, []string{}, tc.want)
-		})
-	}
-}
