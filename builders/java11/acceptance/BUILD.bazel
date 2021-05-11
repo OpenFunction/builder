@@ -1,0 +1,33 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+licenses(["notice"])
+
+go_library(
+    name = "acceptance",
+    srcs = ["acceptance.go"],
+    importpath = "github.com/GoogleCloudPlatform/buildpacks/" + package_name(),
+)
+
+go_test(
+    name = "java_fn_test",
+    size = "enormous",
+    srcs = ["java_fn_test.go"],
+    args = [
+        "-test-data=$(location //builders/testdata/java:functions.tgz)",
+        "-structure-test-config=$(location :config.yaml)",
+        "-builder-source=$(location //builders/java11:builder.tar)",
+        "-builder-prefix=gcpbase-java-fn-test-",
+        "-pull-images=false",
+    ],
+    data = [
+        ":config.yaml",
+        "//builders/java11:builder.tar",
+        "//builders/testdata/java:functions.tgz",
+    ],
+    embed = [":acceptance"],
+    rundir = ".",
+    tags = [
+        "local",
+    ],
+    deps = ["//internal/acceptance"],
+)
