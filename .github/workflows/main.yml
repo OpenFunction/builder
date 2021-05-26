@@ -24,12 +24,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
-      # Runs a single command using the runners shell
+      
+      - name: Install Bazel
+        run: wget -O - https://github.com/bazelbuild/bazel/releases/download/4.1.0/bazel-4.1.0-installer-linux-x86_64.sh | bash --user
+        
       - name: Test go115
-        # You may pin to the exact commit or the version.
-        # uses: ngalaiko/bazel-action@ad5c8499ac2945bb7cc56587ed9da4a96b4fbb84
-        uses: ngalaiko/bazel-action@2.0.0
-        with:
-          # Arguments to the bazel command
-          args: test //builders/go115/acceptance/...
+        run: bazel test //builders/go115/acceptance/...
