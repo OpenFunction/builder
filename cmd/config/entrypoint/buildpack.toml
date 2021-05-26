@@ -7,3 +7,6 @@ name = "Config - Entrypoint"
 
 [[stacks]]
 id = "google"
+
+[[stacks]]
+id = "openfunction.go115"

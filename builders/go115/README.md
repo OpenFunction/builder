@@ -52,9 +52,41 @@ Executed 1 out of 1 test: 1 test passes.
 INFO: Build completed successfully, 7 total actions
 ```
 
-### Run
+### Run locally
 
-Download gcp samples:
+#### OpenFunction Samples:
+
+Download samples:
+
+```shell
+git clone https://github.com/OpenFunction/function-samples.git
+```
+
+Build the function:
+
+> Add `--network host` to pack and docker command if they cannot reach internet.
+
+```shell
+cd function-samples/hello-world-go/
+pack build function-go --builder of/go115 --env FUNC_NAME="HelloWorld"
+docker run --rm -p8080:8080 function-go
+```
+
+Visit the function:
+
+```shell
+curl http://localhost:8080
+```
+
+Output example:
+
+```shell
+hello, world!
+```
+
+#### GoogleCloudPlatform Samples
+
+Download samples:
 
 ```shell
 git clone https://github.com/GoogleCloudPlatform/buildpack-samples.git

@@ -7,3 +7,6 @@ name = "Go - Clear Source"
 
 [[stacks]]
 id = "google"
+
+[[stacks]]
+id = "openfunction.go115"

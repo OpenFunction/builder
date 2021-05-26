@@ -1,0 +1,12 @@
+api = "0.2"
+
+[buildpack]
+id = "openfunction.go.of-functions-framework"
+version = "0.0.1"
+name = "Go - OpenFunction Functions Framework"
+
+[[stacks]]
+id = "google"
+
+[[stacks]]
+id = "openfunction.go115"

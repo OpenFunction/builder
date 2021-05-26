@@ -20,7 +20,7 @@ import (
 	"net/http"
 
 	// Blank-import the framework so that it doesn't get removed by go mod.
-	_ "github.com/GoogleCloudPlatform/functions-framework-go/funcframework"
+	_ "github.com/OpenFunction/functions-framework-go/functionframeworks"
 )
 
 // Func is a test function.
