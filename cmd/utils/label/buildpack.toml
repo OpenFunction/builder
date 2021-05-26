@@ -12,25 +12,7 @@ id = "google"
 id = "google.dotnet3"
 
 [[stacks]]
-id = "google.go111"
-
-[[stacks]]
-id = "google.go112"
-
-[[stacks]]
-id = "google.go113"
-
-[[stacks]]
-id = "google.go116"
-
-[[stacks]]
-id = "google.go114"
-
-[[stacks]]
-id = "google.go115"
-
-[[stacks]]
-id = "google.go116"
+id = "openfunction.go115"
 
 [[stacks]]
 id = "google.java11"

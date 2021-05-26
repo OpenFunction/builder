@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package acceptance implements acceptance tests for a buildpack builder.
-package acceptance
+// Package main serves to import the functions framework so that it can be fetched via `go mod vendor`.
+// A package must be used in code in order for `go mod vendor` to download it.
+package main
 
-const (
-	// Buildpack identifiers used to verify that buildpacks were or were not used.
-	entrypoint      = "google.config.entrypoint"
-	goBuild         = "google.go.build"
-	goFF            = "openfunction.go.of-functions-framework"
+import (
+	_ "github.com/OpenFunction/functions-framework-go"
 )
+
+func main() {}

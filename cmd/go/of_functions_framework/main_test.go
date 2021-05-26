@@ -12,12 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package acceptance implements acceptance tests for a buildpack builder.
-package acceptance
+package main
 
-const (
-	// Buildpack identifiers used to verify that buildpacks were or were not used.
-	entrypoint      = "google.config.entrypoint"
-	goBuild         = "google.go.build"
-	goFF            = "openfunction.go.of-functions-framework"
+import (
+	"testing"
+
+	gcp "github.com/GoogleCloudPlatform/buildpacks/pkg/gcpbuildpack"
 )
+
+func TestDetect(t *testing.T) {
+	testCases := []struct {
+		name  string
+		files map[string]string
+		env   []string
+		stack string
+		want  int
+	}{
+		{
+			name: "with target",
+			env:  []string{"GOOGLE_FUNCTION_TARGET=HelloWorld"},
+			want: 0,
+		},
+		{
+			name: "without target",
+			want: 100,
+		},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			gcp.TestDetectWithStack(t, detectFn, tc.name, tc.files, tc.env, tc.stack, tc.want)
+		})
+	}
+}
