@@ -30,6 +30,14 @@ func TestAcceptanceGoFn(t *testing.T) {
 	testCases := []acceptance.Test{
 		{
 			Name:       "function with framework",
+			App:        "with_framework",
+			Path:       "/Func",
+			Env:        []string{"FUNC_NAME=Func"},
+			MustUse:    []string{goFF, goBuild},
+			MustNotUse: []string{entrypoint},
+		},
+		{
+			Name:       "function with framework go sum",
 			App:        "with_framework_go_sum",
 			Path:       "/Func",
 			Env:        []string{"FUNC_NAME=Func"},

@@ -5,8 +5,8 @@ description = "Ubuntu 18 base image with buildpacks for .NET, Go, Java, Node.js,
   uri = "entrypoint.tgz"
 
 [[buildpacks]]
-  id = "google.go.functions-framework"
-  uri = "go/functions_framework.tgz"
+  id = "openfunction.go.of-functions-framework"
+  uri = "go/of_functions_framework.tgz"
 
 [[buildpacks]]
   id = "google.go.clear_source"
@@ -27,7 +27,7 @@ description = "Ubuntu 18 base image with buildpacks for .NET, Go, Java, Node.js,
 [[order]]
 
   [[order.group]]
-    id = "google.go.functions-framework"
+    id = "openfunction.go.of-functions-framework"
 
   [[order.group]]
     id = "google.go.build"
@@ -46,7 +46,7 @@ description = "Ubuntu 18 base image with buildpacks for .NET, Go, Java, Node.js,
 
 # Currently built with //builders/go116/stack/stack:build.
 [stack]
-  id = "google"
+  id = "openfunction.go116"
   build-image = "openfunctiondev/buildpacks-go116-build:v1"
   run-image = "openfunctiondev/buildpacks-go116-run:v1"
 

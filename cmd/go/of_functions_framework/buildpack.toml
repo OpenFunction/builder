@@ -10,3 +10,6 @@ id = "google"
 
 [[stacks]]
 id = "openfunction.go115"
+
+[[stacks]]
+id = "openfunction.go116"

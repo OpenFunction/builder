@@ -19,5 +19,5 @@ const (
 	// Buildpack identifiers used to verify that buildpacks were or were not used.
 	entrypoint      = "google.config.entrypoint"
 	goBuild         = "google.go.build"
-	goFF            = "google.go.functions-framework"
+	goFF            = "openfunction.go.of-functions-framework"
 )

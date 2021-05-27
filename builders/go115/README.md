@@ -1,6 +1,6 @@
-## Build builder of go version 1.15
+# Build builder of go version 1.15
 
-### Build go115 stack
+## Build go115 stack
 
 ```shell
 bazel run //builders/go115/stack:build
@@ -13,7 +13,7 @@ openfunctiondev/buildpacks-go115-run:v1
 openfunctiondev/buildpacks-go115-build:v1
 ```
 
-### Build go115 builder
+## Build go115 builder
 
 ```shell
 bazel build //builders/go115:builder.image
@@ -32,13 +32,14 @@ docker tag of/go115 <your container registry>/go115:v1
 docker push <your container registry>/go115:v1
 ```
 
-### Test
+## Test
 
 ```shell
 bazel test //builders/go115/acceptance/...
 ```
 
-Output example:
+<details>
+<summary>Output example</summary>
 
 ```shell
 INFO: Analyzed 2 targets (0 packages loaded, 0 targets configured).
@@ -52,9 +53,14 @@ Executed 1 out of 1 test: 1 test passes.
 INFO: Build completed successfully, 7 total actions
 ```
 
-### Run locally
+</details>
 
-#### OpenFunction Samples:
+## Run locally
+
+<details>
+<summary>OpenFunction Samples</summary>
+
+---
 
 Download samples:
 
@@ -84,7 +90,12 @@ Output example:
 hello, world!
 ```
 
-#### GoogleCloudPlatform Samples
+</details>
+
+<details>
+<summary>GoogleCloudPlatform Samples</summary>
+
+---
 
 Download samples:
 
@@ -114,7 +125,9 @@ Output example:
 hello, world
 ```
 
-### Run on OpenFunction
+</details>
+
+## Run on OpenFunction
 
 1. [Install OpenFunction](https://github.com/OpenFunction/OpenFunction#quickstart)
 2. [Run a function](https://github.com/OpenFunction/OpenFunction#sample-run-a-function)
