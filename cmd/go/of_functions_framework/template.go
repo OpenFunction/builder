@@ -25,16 +25,15 @@ const mainTextTemplate = `// Binary main file implements an HTTP server that loa
 package main
 
 import (
-    "fmt"
 	"context"
-	"github.com/OpenFunction/functions-framework-go/functionframeworks"
-
+	"errors"
+	"fmt"
 	userfunction "{{.Package}}"
-
+	"github.com/OpenFunction/functions-framework-go/functionframeworks"
+	ofctx "github.com/OpenFunction/functions-framework-go/openfunction-context"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 	"log"
 	"net/http"
-	"os"
 )
 
 func register(fn interface{}) error {
@@ -47,10 +46,13 @@ func register(fn interface{}) error {
 		if err := functionframeworks.RegisterCloudEventFunction(ctx, fnCloudEvent); err != nil {
 			return fmt.Errorf("Function failed to register: %v\n", err)
 		}
-	} else if fnOpenFunction, ok := fn.(func(*functionframeworks.OpenFunctionContext, *http.Request) int); ok {
-		if err := functionframeworks.RegisterOpenFunction(fnOpenFunction); err != nil {
+	} else if fnOpenFunction, ok := fn.(func(*ofctx.OpenFunctionContext, interface{}) int); ok {
+		if err := functionframeworks.RegisterOpenFunction(ctx, fnOpenFunction); err != nil {
 			return fmt.Errorf("Function failed to register: %v\n", err)
 		}
+	} else {
+		err := errors.New("unrecognized function")
+		return fmt.Errorf("Function failed to register: %v\n", err)
 	}
 	return nil
 }
@@ -60,12 +62,7 @@ func main() {
 		log.Fatalf("Failed to register: %v\n", err)
 	}
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "3000"
-	}
-
-	if err := functionframeworks.Start(port); err != nil {
+	if err := functionframeworks.Start(); err != nil {
 		log.Fatalf("Failed to start: %v\n", err)
 	}
 }`
