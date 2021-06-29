@@ -46,7 +46,7 @@ func register(fn interface{}) error {
 		if err := functionframeworks.RegisterCloudEventFunction(ctx, fnCloudEvent); err != nil {
 			return fmt.Errorf("Function failed to register: %v\n", err)
 		}
-	} else if fnOpenFunction, ok := fn.(func(*ofctx.OpenFunctionContext, interface{}) int); ok {
+	} else if fnOpenFunction, ok := fn.(func(*ofctx.OpenFunctionContext, []byte) int); ok {
 		if err := functionframeworks.RegisterOpenFunction(ctx, fnOpenFunction); err != nil {
 			return fmt.Errorf("Function failed to register: %v\n", err)
 		}
