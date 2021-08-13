@@ -1,0 +1,39 @@
+description = "Builder for the GCF Ruby 2.6 runtime"
+
+[[buildpacks]]
+  id = "google.ruby.functions-framework"
+  uri = "ruby/functions_framework.tgz"
+
+[[buildpacks]]
+  id = "google.ruby.bundle"
+  uri = "ruby/bundle.tgz"
+
+[[buildpacks]]
+  id = "google.config.entrypoint"
+  uri = "entrypoint.tgz"
+
+[[buildpacks]]
+  id = "google.utils.label"
+  uri = "label.tgz"
+
+[[order]]
+
+  [[order.group]]
+    id = "google.ruby.bundle"
+
+  [[order.group]]
+    id = "google.ruby.functions-framework"
+
+  [[buildpacks]]
+    id = "google.config.entrypoint"
+
+  [[order.group]]
+    id = "google.utils.label"
+
+[stack]
+  id = "openfunction.ruby26"
+  build-image = "openfunctiondev/buildpacks-ruby26-build:v1"
+  run-image = "openfunctiondev/buildpacks-ruby26-run:v1"
+
+[lifecycle]
+  version = "0.11.1"

@@ -1,0 +1,22 @@
+load("//tools:defs.bzl", "builder")
+
+licenses(["notice"])
+
+builder(
+    name = "builder",
+    buildpacks = [
+        "//cmd/config/entrypoint:entrypoint.tgz",
+        "//cmd/utils/label:label.tgz",
+        ],
+    groups = {
+        "ruby": [
+            "//cmd/ruby/functions_framework:functions_framework.tgz",
+            "//cmd/ruby/bundle:bundle.tgz",
+        ],
+    },
+
+    image = "of/ruby26",
+    visibility = [
+            "//builders/ruby26/acceptance:__pkg__",
+        ],
+)

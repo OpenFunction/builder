@@ -13,6 +13,7 @@ buildpack(
         "//builders:java_builders",
         "//builders:nodejs_builders",
         "//builders:python_builders",
+        "//builders:ruby_builders",
     ],
 )
 

@@ -9,6 +9,9 @@ name = "Config - Entrypoint"
 id = "google"
 
 [[stacks]]
+id = "openfunction.ruby26"
+
+[[stacks]]
 id = "openfunction.go115"
 
 [[stacks]]

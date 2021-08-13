@@ -68,5 +68,6 @@ package_group(
     name = "ruby_builders",
     packages = [
         "//builders/base",
+        "//builders/ruby26",
     ],
 )
