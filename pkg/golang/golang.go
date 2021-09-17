@@ -16,6 +16,7 @@
 package golang
 
 import (
+	"fmt"
 	"github.com/GoogleCloudPlatform/buildpacks/pkg/env"
 	"os"
 	"path/filepath"
@@ -152,7 +153,7 @@ func ExecWithGoproxyFallback(ctx *gcp.Context, cmd []string, opts ...gcp.ExecOpt
 	if SupportsGoProxyFallback(ctx) {
 		goProxy := os.Getenv(env.GoProxy)
 		if goProxy != "" {
-			opts = append(opts, gcp.WithEnv(goProxy))
+			opts = append(opts, gcp.WithEnv(fmt.Sprintf("GOPROXY=%s", goProxy)))
 		}
 		return ctx.Exec(cmd, opts...)
 	}
