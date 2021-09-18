@@ -28,12 +28,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	userfunction "{{.Package}}"
+	"log"
+	"net/http"
+
 	"github.com/OpenFunction/functions-framework-go/functionframeworks"
 	ofctx "github.com/OpenFunction/functions-framework-go/openfunction-context"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
-	"log"
-	"net/http"
+	userfunction "{{.Package}}"
 )
 
 func register(fn interface{}) error {
@@ -46,7 +47,7 @@ func register(fn interface{}) error {
 		if err := functionframeworks.RegisterCloudEventFunction(ctx, fnCloudEvent); err != nil {
 			return fmt.Errorf("Function failed to register: %v\n", err)
 		}
-	} else if fnOpenFunction, ok := fn.(func(*ofctx.OpenFunctionContext, []byte) int); ok {
+	} else if fnOpenFunction, ok := fn.(func(*ofctx.OpenFunctionContext, []byte) ofctx.RetValue); ok {
 		if err := functionframeworks.RegisterOpenFunction(ctx, fnOpenFunction); err != nil {
 			return fmt.Errorf("Function failed to register: %v\n", err)
 		}

@@ -33,7 +33,7 @@ const (
 	gopathLayerName           = "gopath"
 	functionsFrameworkModule  = "github.com/OpenFunction/functions-framework-go"
 	functionsFrameworkPackage = functionsFrameworkModule + "/functionframeworks"
-	functionsFrameworkVersion = "v0.0.0-20210628081257-4137e46a99a6"
+	functionsFrameworkVersion = "v0.0.0-20210922063920-81a7b2951b8a"
 	appName                   = "serverless_function_app"
 	fnSourceDir               = "serverless_function_source_code"
 )
