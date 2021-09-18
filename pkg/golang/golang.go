@@ -32,6 +32,8 @@ const (
 	OutBin = "main"
 	// BuildDirEnv is an environment variable that buildpacks can use to communicate the working directory to `go build`.
 	BuildDirEnv = "GOOGLE_INTERNAL_BUILD_DIR"
+	// OpenFunctionFunctionsFrameworkID is the buildpacks ID of OpenFunction Functions Framework
+	OpenFunctionFunctionsFrameworkID = "openfunction.go.of-functions-framework"
 )
 
 var (
@@ -66,6 +68,12 @@ func SupportsAutoVendor(ctx *gcp.Context) bool {
 // This feature is supported by Go 1.15 and higher.
 func SupportsGoProxyFallback(ctx *gcp.Context) bool {
 	return VersionMatches(ctx, ">=1.15.0")
+}
+
+// IsOpenFunctionFunctionsFramework returns true if the buildpacks is OpenFunction Functions Framework.
+// Because the OpenFunction functions framework requires the go version to be at least 1.15.
+func IsOpenFunctionFunctionsFramework(ctx *gcp.Context) bool {
+	return ctx.BuildpackID() == OpenFunctionFunctionsFrameworkID
 }
 
 // VersionMatches checks if the installed version of Go and the version specified in go.mod match the given version range.
@@ -150,7 +158,7 @@ var readGoMod = func(ctx *gcp.Context) string {
 // versions, we explictly disable GOPROXY and try again on any error.
 // For newer versions of Go, we take advantage of the "pipe" character which has the same effect.
 func ExecWithGoproxyFallback(ctx *gcp.Context, cmd []string, opts ...gcp.ExecOption) *gcp.ExecResult {
-	if SupportsGoProxyFallback(ctx) {
+	if SupportsGoProxyFallback(ctx) || IsOpenFunctionFunctionsFramework(ctx) {
 		goProxy := os.Getenv(env.GoProxy)
 		if goProxy != "" {
 			opts = append(opts, gcp.WithEnv(fmt.Sprintf("GOPROXY=%s", goProxy)))
