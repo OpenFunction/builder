@@ -1,4 +1,11 @@
-# Build builder of go version 1.15
+# Build builder of go version 1.16
+
+## Version Matrix
+
+| Builder Name | Builder Version | Functions-framework-go Version |
+|---------|:---------------:|:---------------:|
+| openfunctiondev/go116-builder | v0.2.2 | [v0.0.0-20210628081257-4137e46a99a6](https://github.com/OpenFunction/functions-framework-go/commit/4137e46a99a6e97f1ff808b4d92ca5f76412f0cc) |
+| openfunctiondev/go116-builder | v0.3.0 | [v0.0.0-20210922063920-81a7b2951b8a](https://github.com/OpenFunction/functions-framework-go/commit/81a7b2951b8af0897978dcc483c1217ac98f02fb) |
 
 ## Build go116 stack
 
