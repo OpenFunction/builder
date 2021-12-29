@@ -2,10 +2,11 @@
 
 ## Version Matrix
 
-| Builder Name | Builder Version | Functions-framework-go Version |
+| Builder Name | Tag description |     Functions-framework-go (buildpacks version) version      |
 |---------|:---------------:|:---------------:|
-| openfunctiondev/go115-builder | v0.2.2 | [v0.0.0-20210628081257-4137e46a99a6](https://github.com/OpenFunction/functions-framework-go/commit/4137e46a99a6e97f1ff808b4d92ca5f76412f0cc) |
-| openfunctiondev/go115-builder | v0.3.0 | [v0.0.0-20210922063920-81a7b2951b8a](https://github.com/OpenFunction/functions-framework-go/commit/81a7b2951b8af0897978dcc483c1217ac98f02fb) |
+| [openfunction/builder-go:v0.2.2-1.15](https://hub.docker.com/layers/openfunction/builder-go/v0.2.2-1.15/images/sha256-a95d533388b77d17c4d0034e0ffe2f422e987fc10e4e375b7384a747667ba4b2?context=repo) | Builder: v0.2.2, Go: 1.15 | [v0.0.0-20210628081257-4137e46a99a6](https://github.com/OpenFunction/functions-framework-go/commit/4137e46a99a6e97f1ff808b4d92ca5f76412f0cc) (0.2.2) |
+| [openfunction/builder-go:v0.3.0-1.15](https://hub.docker.com/layers/openfunction/builder-go/v0.3.0-1.15/images/sha256-5213a11e21fa05b3b7904210d9e523bad2bdb199372b1e4a65ce75c1055c4937?context=repo) | Builder: v0.3.0, Go: 1.15 | [v0.0.0-20210922063920-81a7b2951b8a](https://github.com/OpenFunction/functions-framework-go/commit/81a7b2951b8af0897978dcc483c1217ac98f02fb) (0.3.0) |
+| [openfunction/builder-go:v0.4.0-1.15](https://hub.docker.com/layers/openfunction/builder-go/v0.4.0-1.15/images/sha256-1fa8deeba5a105535f6ba8fa33fb8931456b388d714a2e8c9aa24541fd3b934b?context=repo) | Builder: v0.4.0, Go: 1.15 | [v0.1.0](https://github.com/OpenFunction/functions-framework-go/releases/tag/v0.1.0) (0.4.0) |
 
 ## Build go115 stack
 
