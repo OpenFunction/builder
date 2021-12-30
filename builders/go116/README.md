@@ -2,11 +2,11 @@
 
 ## Version Matrix
 
-| Builder Name                                                 |      Tag description      |     Functions-framework-go (buildpacks version) version      |
-| ------------------------------------------------------------ | :-----------------------: | :----------------------------------------------------------: |
-| [openfunction/builder-go:v0.2.2-1.16](https://hub.docker.com/layers/openfunction/builder-go/v0.2.2-1.16/images/sha256-82e87901dabd427f1138be0ebba33239171e6f3153dd283a31826aaa21f98d0b?context=repo) | Builder: v0.2.2, Go: 1.16 | [v0.0.0-20210628081257-4137e46a99a6](https://github.com/OpenFunction/functions-framework-go/commit/4137e46a99a6e97f1ff808b4d92ca5f76412f0cc) (0.2.2) |
-| [openfunction/builder-go:v0.3.0-1.16](https://hub.docker.com/layers/openfunction/builder-go/v0.3.0-1.16/images/sha256-b4fa0902863dd5b2098f34f70224475d080ac59e60df32e3bc11e97af3c286ac?context=repo) | Builder: v0.3.0, Go: 1.16 | [v0.0.0-20210922063920-81a7b2951b8a](https://github.com/OpenFunction/functions-framework-go/commit/81a7b2951b8af0897978dcc483c1217ac98f02fb) (0.3.0) |
-| [openfunction/builder-go:v0.4.0-1.16](https://hub.docker.com/layers/openfunction/builder-go/v0.4.0-1.16/images/sha256-7fa3a3a4245e269d059cb8e25e2888ee8e1878504fdbcfff76ea85548d22d578?context=repo) | Builder: v0.4.0, Go: 1.16 | [v0.1.0](https://github.com/OpenFunction/functions-framework-go/releases/tag/v0.1.0) (0.4.0) |
+| Builder Name | Tag description |     Functions-framework-go version     |
+|---------|:---------------:|:---------------:|
+| openfunction/builder-go:v0.2.2-1.16 | Buildpacks: v0.2.2, Go: 1.16 | [v0.0.0-20210628081257-4137e46a99a6](https://github.com/OpenFunction/functions-framework-go/commit/4137e46a99a6e97f1ff808b4d92ca5f76412f0cc) |
+| openfunction/builder-go:v0.3.0-1.16 | Buildpacks: v0.3.0, Go: 1.16 | [v0.0.0-20210922063920-81a7b2951b8a](https://github.com/OpenFunction/functions-framework-go/commit/81a7b2951b8af0897978dcc483c1217ac98f02fb) |
+| openfunction/builder-go:v0.4.0-1.16 | Buildpacks: v0.4.0, Go: 1.16 | [v0.1.1](https://github.com/OpenFunction/functions-framework-go/releases/tag/v0.1.1) |
 
 ## Build go116 stack
 
