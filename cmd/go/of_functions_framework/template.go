@@ -26,44 +26,44 @@ package main
 
 import (
 	"context"
-	"errors"
-	"fmt"
-	"log"
-	"net/http"
+	"reflect"
 
-	"github.com/OpenFunction/functions-framework-go/functionframeworks"
-	ofctx "github.com/OpenFunction/functions-framework-go/openfunction-context"
-	cloudevents "github.com/cloudevents/sdk-go/v2"
+	"k8s.io/klog/v2"
+	"github.com/OpenFunction/functions-framework-go/framework"
+	"github.com/OpenFunction/functions-framework-go/plugin"
 	userfunction "{{.Package}}"
+
+	{{- range $Plugin := .Plugins }}
+	{{ $Plugin.AliasName }} "{{ $Plugin.Path -}}"
+	{{- end }}
 )
 
-func register(fn interface{}) error {
+func main() {
 	ctx := context.Background()
-	if fnHTTP, ok := fn.(func(http.ResponseWriter, *http.Request)); ok {
-		if err := functionframeworks.RegisterHTTPFunction(ctx, fnHTTP); err != nil {
-			return fmt.Errorf("Function failed to register: %v\n", err)
-		}
-	} else if fnCloudEvent, ok := fn.(func(context.Context, cloudevents.Event) error); ok {
-		if err := functionframeworks.RegisterCloudEventFunction(ctx, fnCloudEvent); err != nil {
-			return fmt.Errorf("Function failed to register: %v\n", err)
-		}
-	} else if fnOpenFunction, ok := fn.(func(*ofctx.OpenFunctionContext, []byte) ofctx.RetValue); ok {
-		if err := functionframeworks.RegisterOpenFunction(ctx, fnOpenFunction); err != nil {
-			return fmt.Errorf("Function failed to register: %v\n", err)
-		}
-	} else {
-		err := errors.New("unrecognized function")
-		return fmt.Errorf("Function failed to register: %v\n", err)
+	fwk, err := framework.NewFramework()
+	if err != nil {
+		klog.Exit(err)
 	}
-	return nil
+	fwk.RegisterPlugins(getLocalPlugins())
+	if err := fwk.Register(ctx, userfunction.{{.Target}}); err != nil {
+		klog.Exit(err)
+	}
+	if err := fwk.Start(ctx); err != nil {
+		klog.Exit(err)
+	}
 }
 
-func main() {
-	if err := register(userfunction.{{.Target}}); err != nil {
-		log.Fatalf("Failed to register: %v\n", err)
+func getLocalPlugins() map[string]plugin.Plugin {
+	nilPlugins := map[string]plugin.Plugin{}
+	localPlugins := map[string]plugin.Plugin{
+		{{- range $Plugin := .Plugins }}
+		{{ $Plugin.GetNameFunc }}: {{ $Plugin.NewFunc }},
+		{{- end }}
 	}
 
-	if err := functionframeworks.Start(); err != nil {
-		log.Fatalf("Failed to start: %v\n", err)
+	if reflect.DeepEqual(localPlugins, nilPlugins) {
+		return nil
+	} else {
+		return localPlugins
 	}
 }`
