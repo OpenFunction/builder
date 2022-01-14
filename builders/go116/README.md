@@ -17,7 +17,7 @@ bazel run //builders/go116/stack:build
 This command creates two images:
 
 ```shell
-openfunctiondev/buildpacks-go116-run:v1
+openfunctiondev/buildpacks-run-go:v1
 openfunctiondev/buildpacks-go116-build:v1
 ```
 
@@ -30,14 +30,14 @@ bazel build //builders/go116:builder.image
 This command creates one image:
 
 ```shell
-of/go116
+openfunction/builder-go
 ```
 
 Tag and push:
 
 ```shell
-docker tag of/go116 <your container registry>/go116:v1
-docker push <your container registry>/go116:v1
+docker tag openfunction/builder-go:latest openfunction/builder-go:latest-1.16
+docker push openfunction/builder-go:latest-1.16
 ```
 
 ## Test
@@ -73,7 +73,7 @@ INFO: Build completed successfully, 10 total actions
 Download samples:
 
 ```shell
-git clone https://github.com/OpenFunction/function-samples.git
+git clone https://github.com/OpenFunction/samples.git
 ```
 
 Build the function:
@@ -81,9 +81,9 @@ Build the function:
 > Add `--network host` to pack and docker command if they cannot reach internet.
 
 ```shell
-cd function-samples/hello-world-go/
-pack build function-go --builder of/go116 --env FUNC_NAME="HelloWorld"
-docker run --rm -p8080:8080 function-go
+cd samples/functions/Knative/hello-world-go
+pack build func-helloworld-go --builder openfunction/builder-go:latest-1.16 --env FUNC_NAME="HelloWorld"
+docker run -d --rm --name func-helloworld-go -p8080:8080 func-helloworld-go
 ```
 
 Visit the function:
@@ -118,7 +118,7 @@ Build the function:
 
 ```shell
 cd buildpack-samples/sample-functions-framework-go/
-pack build function-go --builder of/go116 --env FUNC_NAME="HelloWorld"
+pack build function-go --builder openfunction/builder-go:latest-1.16 --env FUNC_NAME="HelloWorld"
 docker run --rm -p8080:8080 function-go
 ```
 
