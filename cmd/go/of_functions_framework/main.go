@@ -18,6 +18,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -32,10 +33,11 @@ const (
 	layerName                 = "functions-framework"
 	gopathLayerName           = "gopath"
 	functionsFrameworkModule  = "github.com/OpenFunction/functions-framework-go"
-	functionsFrameworkPackage = functionsFrameworkModule + "/functionframeworks"
-	functionsFrameworkVersion = "v0.1.1"
+	functionsFrameworkPackage = functionsFrameworkModule + "/framework"
+	functionsFrameworkVersion = "v0.1.2-0.20220114080143-12cee748de15"
 	appName                   = "serverless_function_app"
 	fnSourceDir               = "serverless_function_source_code"
+	customPluginDir           = "plugins"
 )
 
 var (
@@ -47,6 +49,14 @@ type fnInfo struct {
 	Source  string
 	Target  string
 	Package string
+	Plugins []Plugin
+}
+
+type Plugin struct {
+	AliasName   string
+	Path        string
+	GetNameFunc string
+	NewFunc     string
 }
 
 func main() {
@@ -140,6 +150,13 @@ func createMainGoMod(ctx *gcp.Context, fn fnInfo) error {
 	if version == "" {
 		golang.ExecWithGoproxyFallback(ctx, []string{"go", "get", fmt.Sprintf("%s@%s", functionsFrameworkModule, functionsFrameworkVersion)}, gcp.WithUserAttribution)
 		version = functionsFrameworkVersion
+	}
+
+	pluginDir := filepath.Join(fn.Source, customPluginDir)
+	if ctx.FileExists(pluginDir) {
+		if err := getPlugins(ctx, &fn, pluginDir); err != nil {
+			return err
+		}
 	}
 
 	if err := createMainGoFile(ctx, fn, filepath.Join(ctx.ApplicationRoot(), "main.go"), version); err != nil {
@@ -255,4 +272,74 @@ func extractPackageNameInDir(ctx *gcp.Context, source string) string {
 	cacheDir := ctx.TempDir("", appName)
 	defer ctx.RemoveAll(cacheDir)
 	return ctx.Exec([]string{"go", "run", script, "-dir", source}, gcp.WithEnv("GOCACHE="+cacheDir), gcp.WithUserAttribution).Stdout
+}
+
+// getPlugins() iterates through the "plugins" directory to get information about valid plugins
+// and loads them into the fnInfo structure, which is used to render the main.go template.
+// Example:
+//
+// |-- main.go
+// |-- go.mod
+// `-- plugins
+//     |-- plugin-a
+//     |   `-- plugin-a.go
+// `-- plugin-b
+//         `-- plugin-b.go
+//
+// In this example, the `plugins` information would look like this:
+//
+//	plugins = []Plugin{
+// 		{
+// 			Path: "<fnInfo.Package>/plugins/plugin-a",
+//			AliasName: "pluginA",
+//			GetNameFunc: "pluginA.Name",
+//			NewFunc: "pluginA.New()",
+//		},
+//		{
+//			Path: "<fnInfo.Package>/plugins/plugin-b",
+//			AliasName: "pluginB",
+//			GetNameFunc: "pluginB.Name",
+//			NewFunc: "pluginB.New()",
+//		},
+//	}
+func getPlugins(ctx *gcp.Context, fn *fnInfo, pluginDir string) error {
+	var plugins []Plugin
+
+	pluginDirectories, err := ioutil.ReadDir(pluginDir)
+	if err != nil {
+		return err
+	}
+
+	for _, plg := range pluginDirectories {
+		if plg.IsDir() && strings.HasPrefix(plg.Name(), "plugin-") {
+			plgAbsPath := filepath.Join(pluginDir, plg.Name())
+			plgFiles, err := ioutil.ReadDir(plgAbsPath)
+			if err != nil {
+				continue
+			}
+			if len(plgFiles) < 1 {
+				continue
+			}
+
+			var aliasName string
+			if strings.Contains(plg.Name(), "-") {
+				plgNameSlice := strings.Split(plg.Name(), "-")
+				aliasName = plgNameSlice[0]
+				for _, s := range plgNameSlice[1:] {
+					aliasName += strings.Title(s)
+				}
+			} else {
+				aliasName = plg.Name()
+			}
+
+			plugins = append(plugins, Plugin{
+				Path:        filepath.Join(fn.Package, customPluginDir, plg.Name()),
+				AliasName:   aliasName,
+				GetNameFunc: fmt.Sprintf("%s.Name", aliasName),
+				NewFunc:     fmt.Sprintf("%s.New()", aliasName),
+			})
+		}
+	}
+	fn.Plugins = plugins
+	return nil
 }
