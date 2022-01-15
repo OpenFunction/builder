@@ -12,8 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG from_image
-FROM ${from_image}
+FROM busybox:1.35 
 
-ENV PORT 8080
-USER nonroot
+ARG cnb_uid=1000
+ARG cnb_gid=1000
+ARG stack_id="openfunction.go116"
+LABEL io.buildpacks.stack.id=${stack_id}
+
+RUN adduser -u 1000 -D cnb cnb
+
+ENV CNB_USER_ID=${cnb_uid}
+ENV CNB_GROUP_ID=${cnb_gid}
+ENV CNB_STACK_ID=${stack_id}

@@ -82,8 +82,8 @@ Build the function:
 
 ```shell
 cd samples/functions/Knative/hello-world-go
-pack build func-helloworld-go --builder openfunction/builder-go:latest-1.16 --env FUNC_NAME="HelloWorld"
-docker run -d --rm --name func-helloworld-go -p8080:8080 func-helloworld-go
+pack build func-helloworld-go --builder openfunction/builder-go:latest-1.16 --env FUNC_NAME="HelloWorld"  --env FUNC_CLEAR_SOURCE=true
+docker run -d --env="FUNC_CONTEXT={\"name\":\"HelloWorld\",\"version\":\"v1.0.0\",\"port\":\"8080\",\"runtime\":\"Knative\"}" --rm --name func-helloworld-go -p8080:8080 func-helloworld-go
 ```
 
 Visit the function:
