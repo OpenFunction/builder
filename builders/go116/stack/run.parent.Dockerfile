@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM busybox:1.35 
+FROM openfunctiondev/distroless-static:nonroot 
 
-ARG cnb_uid=1000
-ARG cnb_gid=1000
+# The uid and gid for a distroless nonroot user is 65532 
+# according to https://github.com/GoogleContainerTools/distroless/issues/443
+ARG cnb_uid=65532
+ARG cnb_gid=65532
 ARG stack_id="openfunction.go116"
 LABEL io.buildpacks.stack.id=${stack_id}
-
-RUN adduser -u 1000 -D cnb cnb
 
 ENV CNB_USER_ID=${cnb_uid}
 ENV CNB_GROUP_ID=${cnb_gid}
