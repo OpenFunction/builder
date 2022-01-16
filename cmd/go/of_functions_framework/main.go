@@ -71,7 +71,7 @@ func detectFn(ctx *gcp.Context) (gcp.DetectResult, error) {
 }
 
 func buildFn(ctx *gcp.Context) error {
-	l := ctx.Layer(layerName, gcp.LaunchLayer)
+	l := ctx.Layer(layerName, gcp.BuildLayer, gcp.CacheLayer)
 	ctx.SetFunctionsEnvVars(l)
 
 	fnTarget := os.Getenv(env.FunctionTarget)
