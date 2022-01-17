@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM gcr.io/gcp-runtimes/ubuntu_18_0_4
+FROM openfunctiondev/ubuntu_18_0_4
 
 ARG cnb_uid=1000
 ARG cnb_gid=1000
@@ -35,7 +35,7 @@ LABEL io.buildpacks.stack.id=${stack_id}
 RUN groupadd cnb --gid ${cnb_gid} && \
   useradd --uid ${cnb_uid} --gid ${cnb_gid} -m -s /bin/bash cnb
 
-RUN curl --fail --show-error --silent --location --retry 3 https://golang.org/dl/go1.16.linux-amd64.tar.gz | tar xz --directory /usr/local/ --strip-components=1
+RUN curl --fail --show-error --silent --location --retry 3 https://go.dev/dl/go1.16.13.linux-amd64.tar.gz | tar xz --directory /usr/local/ --strip-components=1
 
 ENV CNB_USER_ID=${cnb_uid}
 ENV CNB_GROUP_ID=${cnb_gid}

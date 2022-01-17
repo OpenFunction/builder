@@ -55,9 +55,11 @@ func (ctx *Context) Layer(name string, opts ...layerOption) *libcnb.Layer {
 		ctx.Exit(1, Errorf(StatusInternal, err.Error()))
 	}
 	ctx.MkdirAll(l.Path, layerMode)
+
 	for _, o := range opts {
 		o(ctx, &l)
 	}
+
 	if l.Metadata == nil {
 		l.Metadata = make(map[string]interface{})
 	}

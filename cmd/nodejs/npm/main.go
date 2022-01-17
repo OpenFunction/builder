@@ -74,7 +74,7 @@ func buildFn(ctx *gcp.Context) error {
 	}
 
 	el := ctx.Layer("env", gcp.BuildLayer, gcp.LaunchLayer)
-	el.SharedEnvironment.PrependPath("PATH", filepath.Join(ctx.ApplicationRoot(), "node_modules", ".bin"))
+	el.SharedEnvironment.Default("PATH", filepath.Join(ctx.ApplicationRoot(), "node_modules", ".bin"))
 	el.SharedEnvironment.Default("NODE_ENV", nodeEnv)
 
 	// Configure the entrypoint for production.

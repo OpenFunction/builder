@@ -17,8 +17,8 @@ bazel run //builders/go116/stack:build
 This command creates two images:
 
 ```shell
-openfunctiondev/buildpacks-run-go:v1
-openfunctiondev/buildpacks-go116-build:v1
+openfunctiondev/buildpacks-run-go:v2
+openfunctiondev/buildpacks-go116-build:v2
 ```
 
 ## Build go116 builder

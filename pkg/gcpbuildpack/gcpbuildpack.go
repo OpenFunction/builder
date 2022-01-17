@@ -302,15 +302,21 @@ func (ctx *Context) Span(label string, start time.Time, status Status) {
 	ctx.stats.spans = append(ctx.stats.spans, si)
 }
 
-// AddBuildpackPlanEntry adds an entry to the build plan.
-func (ctx *Context) AddBuildpackPlanEntry(entry libcnb.BuildpackPlanEntry) {
-	if ctx.buildResult.Plan == nil {
-		ctx.buildResult.Plan = &libcnb.BuildpackPlan{}
+// AddBOMEntry adds an entry to the build plan.
+func (ctx *Context) AddBOMEntry(entry libcnb.BOMEntry) {
+	if ctx.buildResult.BOM == nil {
+		ctx.buildResult.BOM = &libcnb.BOM{}
 	}
-	ctx.buildResult.Plan.Entries = append(ctx.buildResult.Plan.Entries, entry)
+	ctx.buildResult.BOM.Entries = append(ctx.buildResult.BOM.Entries, entry)
 }
 
-// AddWebProcess adds the given command as the web start process, overwriting any previous web start process.
+// AddDefaultWebProcess adds the given command as the web start process with the new default option (introduced in buildpack api v0.6+), 
+// overwriting any previous web start process.
+func (ctx *Context) AddDefaultWebProcess(cmd []string, defaultProc bool) {
+	ctx.AddDefaultProcess(WebProcess, cmd, true, defaultProc) // true causes direct execution without a shell.
+}
+
+// AddDefaultWebProcess adds the given command as the web start process, overwriting any previous web start process.
 func (ctx *Context) AddWebProcess(cmd []string) {
 	ctx.AddProcess(WebProcess, cmd, true) // true causes direct execution without a shell.
 }
@@ -330,6 +336,30 @@ func (ctx *Context) AddProcess(name string, cmd []string, direct bool) {
 		Type:    name,
 		Command: cmd[0],
 		Direct:  direct,
+	}
+	if len(cmd) > 1 {
+		p.Arguments = cmd[1:]
+	}
+	ctx.buildResult.Processes = append(ctx.buildResult.Processes, p)
+}
+
+// AddDefaultProcess adds the given command as named process with the new default option (introduced in buildpack api v0.6+),
+// overwriting any previous process with the same name.
+func (ctx *Context) AddDefaultProcess(name string, cmd []string, direct bool, defaultProc bool) {
+	current := ctx.buildResult.Processes
+	ctx.buildResult.Processes = []libcnb.Process{}
+	for _, p := range current {
+		if p.Type == name {
+			ctx.Debugf("Overwriting existing %s process %q.", name, p.Command)
+			continue // Do not add this item back to the ctx.processes; we are overwriting it.
+		}
+		ctx.buildResult.Processes = append(ctx.buildResult.Processes, p)
+	}
+	p := libcnb.Process{
+		Type:    name,
+		Command: cmd[0],
+		Direct:  direct,
+		Default: defaultProc,
 	}
 	if len(cmd) > 1 {
 		p.Arguments = cmd[1:]

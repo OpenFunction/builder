@@ -15,7 +15,7 @@ builder(
             "//cmd/go/of_functions_framework:of_functions_framework.tgz",
         ],
     },
-    image = "openfunction/builder-go",
+    image = "openfunction/builder-go:v2",
     visibility = [
         "//builders/go116/acceptance:__pkg__",
     ],
