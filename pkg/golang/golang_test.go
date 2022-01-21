@@ -46,6 +46,10 @@ func TestGoVersion(t *testing.T) {
 			goVersion: "go version go1.15rc1 darwin/amd64",
 			want:      "1.15",
 		},
+		{
+			goVersion: "go version go1.16.13 linux/amd64",
+			want:      "1.16",
+		},
 	}
 
 	for _, tc := range testCases {
@@ -284,6 +288,22 @@ module dir
 `,
 			want: "",
 		},
+		{
+			gomod: `
+module dir 
+
+go 1.16
+
+require (
+	github.com/BurntSushi/toml v0.3.1
+	github.com/blang/semver v3.5.2-0.20180723201105-3c1074078d32+incompatible
+	github.com/buildpacks/libcnb v1.25.4
+	github.com/google/go-licenses v0.0.0-20200602185517-f29a4c695c3d // indirect
+)
+`
+,
+			want: "1.16",
+		},
 	}
 
 	for tci, tc := range testCases {
@@ -340,6 +360,10 @@ func TestSupportsNoGoMod(t *testing.T) {
 			goVersion: "go version go1.15rc1 darwin/amd64",
 			want:      false,
 		},
+		{
+			goVersion: "go version go1.16.13 linux/amd64",
+			want:      false,
+		},
 	}
 
 	for _, tc := range testCases {
@@ -385,6 +409,11 @@ func TestSupportsAutoVendor(t *testing.T) {
 		{
 			goVersion: "go version go1.15 darwin/amd64",
 			goMod:     "module dir\ngo 1.15",
+			want:      true,
+		},
+		{
+			goVersion: "go version go1.16.13 linux/amd64",
+			goMod:     "module dir\ngo 1.16",
 			want:      true,
 		},
 		{

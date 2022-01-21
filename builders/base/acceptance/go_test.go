@@ -126,6 +126,13 @@ func TestFailuresGo(t *testing.T) {
 			MustMatch:              `Tip: "GOOGLE_BUILDABLE" env var configures which Go package is built`,
 			SkipBuilderOutputMatch: true,
 		},
+		{
+			Name:                   "no Go files in root (Go 1.16)",
+			App:                    "go/entrypoints",
+			Env:                    []string{"GOOGLE_RUNTIME_VERSION=1.16"},
+			MustMatch:              `Tip: "GOOGLE_BUILDABLE" env var configures which Go package is built`,
+			SkipBuilderOutputMatch: true,
+		},
 	}
 
 	for _, tc := range testCases {
