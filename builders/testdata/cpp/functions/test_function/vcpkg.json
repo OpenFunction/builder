@@ -1,8 +1,0 @@
-{
-  "name": "with-manifest",
-  "version-string": "unversioned",
-  "dependencies": [
-    "fmt",
-    "functions-framework-cpp"
-  ]
-}
