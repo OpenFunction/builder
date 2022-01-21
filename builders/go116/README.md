@@ -36,8 +36,9 @@ openfunction/builder-go
 Tag and push:
 
 ```shell
-docker tag openfunction/builder-go:latest openfunction/builder-go:latest-1.16
-docker push openfunction/builder-go:latest-1.16
+docker tag openfunction/builder-go:v2 openfunction/builder-go:v2-1.16
+docker push openfunction/builder-go:v2
+docker push openfunction/builder-go:v2-1.16
 ```
 
 ## Test
@@ -82,7 +83,7 @@ Build the function:
 
 ```shell
 cd samples/functions/Knative/hello-world-go
-pack build func-helloworld-go --builder openfunction/builder-go:latest-1.16 --env FUNC_NAME="HelloWorld"  --env FUNC_CLEAR_SOURCE=true
+pack build func-helloworld-go --builder openfunction/builder-go:v2 --env FUNC_NAME="HelloWorld"  --env FUNC_CLEAR_SOURCE=true
 docker run -d --env="FUNC_CONTEXT={\"name\":\"HelloWorld\",\"version\":\"v1.0.0\",\"port\":\"8080\",\"runtime\":\"Knative\"}" --rm --name func-helloworld-go -p8080:8080 func-helloworld-go
 ```
 
@@ -118,7 +119,7 @@ Build the function:
 
 ```shell
 cd buildpack-samples/sample-functions-framework-go/
-pack build function-go --builder openfunction/builder-go:latest-1.16 --env FUNC_NAME="HelloWorld"
+pack build function-go --builder openfunction/builder-go:v2 --env FUNC_NAME="HelloWorld"
 docker run --rm -p8080:8080 function-go
 ```
 

@@ -1,8 +1,0 @@
-{
-    "require": {
-        "google/cloud-functions-framework": "^0.7"
-    },
-    "scripts": {
-        "gcp-build": "touch generated.txt"
-    }
-}
