@@ -54,7 +54,7 @@ func buildFn(ctx *gcp.Context) error {
 	// Create a layer for the compiled binary.  Add it to PATH in case
 	// users wish to invoke the binary manually.
 	bl := ctx.Layer("bin", gcp.LaunchLayer)
-	bl.LaunchEnvironment.PrependPath("PATH", bl.Path)
+	bl.LaunchEnvironment.Default("PATH", bl.Path)
 	outBin := filepath.Join(bl.Path, golang.OutBin)
 
 	buildable, err := goBuildable(ctx)
@@ -74,10 +74,12 @@ func buildFn(ctx *gcp.Context) error {
 	}
 	golang.ExecWithGoproxyFallback(ctx, bld, gcp.WithEnv("GOCACHE="+cl.Path, "CGO_ENABLED=0"), gcp.WithWorkDir(workdir), gcp.WithMessageProducer(printTipsAndKeepStderrTail(ctx)), gcp.WithUserAttribution)
 
+	// Set the default process type
+	ctx.SetMetadata(bl, "buildpack-default-process-type", "web")
 	// Configure the entrypoint for production. Use the full path to save `skaffold debug`
 	// from fetching the remote container image (tens to hundreds of megabytes), which is slow.
 	if !devmode.Enabled(ctx) {
-		ctx.AddWebProcess([]string{outBin})
+		ctx.AddDefaultWebProcess([]string{outBin}, true)
 		return nil
 	}
 

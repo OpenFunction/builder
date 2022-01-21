@@ -80,4 +80,4 @@ description = "Ubuntu 18 base image with buildpacks for Nodejs"
   run-image = "openfunctiondev/buildpacks-node16-run:v1"
 
 [lifecycle]
-  version = "0.11.1"
+  version = "0.13.2"

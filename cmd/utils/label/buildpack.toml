@@ -1,4 +1,4 @@
-api = "0.2"
+api = "0.7"
 
 [buildpack]
 id = "google.utils.label"
@@ -61,3 +61,7 @@ id = "google.ruby27"
 
 [[stacks]]
 id = "openfunction.ruby26"
+
+[types]
+build = true
+launch = true

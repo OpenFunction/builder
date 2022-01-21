@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM gcr.io/gcp-runtimes/ubuntu_18_0_4
+FROM openfunctiondev/ubuntu_18_0_4
 
 ARG cnb_uid=1000
 ARG cnb_gid=1000
