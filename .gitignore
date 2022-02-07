@@ -1,1 +1,8 @@
 bazel-*
+.idea/
+builders/testdata/dotnet/*/obj/
+builders/testdata/dotnet/*/*/obj/
+builders/testdata/dotnet/*/*/*/obj/
+builders/testdata/java/*/.gradle/
+builders/testdata/generic/*/obj/
+builders/testdata/generic/*/*/obj/

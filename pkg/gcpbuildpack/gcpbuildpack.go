@@ -316,7 +316,7 @@ func (ctx *Context) AddDefaultWebProcess(cmd []string, defaultProc bool) {
 	ctx.AddDefaultProcess(WebProcess, cmd, true, defaultProc) // true causes direct execution without a shell.
 }
 
-// AddDefaultWebProcess adds the given command as the web start process, overwriting any previous web start process.
+// AddWebProcess adds the given command as the web start process, overwriting any previous web start process.
 func (ctx *Context) AddWebProcess(cmd []string) {
 	ctx.AddProcess(WebProcess, cmd, true) // true causes direct execution without a shell.
 }
