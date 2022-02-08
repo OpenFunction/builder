@@ -113,7 +113,7 @@ func buildFn(ctx *gcp.Context) error {
 	}
 
 	ctx.SetFunctionsEnvVars(l)
-	ctx.AddWebProcess([]string{"/bin/bash", "-c", ff})
+	ctx.AddDefaultWebProcess([]string{"/bin/bash", "-c", ff}, true)
 	return nil
 }
 

@@ -76,7 +76,7 @@ func buildFn(ctx *gcp.Context) error {
 	}
 
 	ctx.SetFunctionsEnvVars(l)
-	ctx.AddWebProcess([]string{"functions-framework"})
+	ctx.AddDefaultWebProcess([]string{"functions-framework"}, true)
 	return nil
 }
 
