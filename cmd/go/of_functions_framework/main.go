@@ -71,7 +71,7 @@ func detectFn(ctx *gcp.Context) (gcp.DetectResult, error) {
 }
 
 func buildFn(ctx *gcp.Context) error {
-        l := ctx.Layer(layerName, gcp.BuildLayer, gcp.CacheLayer)
+	l := ctx.Layer(layerName, gcp.BuildLayer, gcp.CacheLayer)
 	ctx.SetFunctionsEnvVars(l)
 
 	fnTarget := os.Getenv(env.FunctionTarget)
@@ -184,7 +184,7 @@ func createMainVendored(ctx *gcp.Context, fn fnInfo) error {
 	gopathSrc := filepath.Join(gopath, "src")
 	ctx.MkdirAll(gopathSrc, 0755)
 	l.BuildEnvironment.Override(env.Buildable, appName+"/main")
-        l.BuildEnvironment.Override("GOPATH", gopath)
+	l.BuildEnvironment.Override("GOPATH", gopath)
 	ctx.Setenv("GOPATH", gopath)
 
 	appPath := filepath.Join(gopathSrc, appName, "main")
