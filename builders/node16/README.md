@@ -28,8 +28,8 @@ of/node16
 Tag and push:
 
 ```shell
-docker tag of/node16 <your container registry>/node16:v1
-docker push <your container registry>/node16:v1
+docker tag of/node16 openfunction/builder-node:v2_16
+docker push openfunction/builder-node:v2_16
 ```
 
 ### Test

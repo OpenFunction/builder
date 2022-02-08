@@ -5,15 +5,15 @@ description = "Ubuntu 18 base image with buildpacks for Nodejs"
   uri = "entrypoint.tgz"
 
 [[buildpacks]]
-  id = "google.nodejs.npm"
+  id = "openfunction.nodejs.npm"
   uri = "nodejs/npm.tgz"
 
 [[buildpacks]]
-  id = "google.nodejs.yarn"
+  id = "openfunction.nodejs.yarn"
   uri = "nodejs/yarn.tgz"
 
 [[buildpacks]]
-  id = "google.nodejs.functions-framework"
+  id = "openfunction.nodejs.functions-framework"
   uri = "nodejs/functions_framework.tgz"
 
 [[buildpacks]]
@@ -29,10 +29,10 @@ description = "Ubuntu 18 base image with buildpacks for Nodejs"
 
 [[order]]
   [[order.group]]
-    id = "google.nodejs.yarn"
+    id = "openfunction.nodejs.yarn"
 
   [[order.group]]
-    id = "google.nodejs.functions-framework"
+    id = "openfunction.nodejs.functions-framework"
     optional = true
 
   [[order.group]]
@@ -44,10 +44,10 @@ description = "Ubuntu 18 base image with buildpacks for Nodejs"
 
 [[order]]
   [[order.group]]
-    id = "google.nodejs.npm"
+    id = "openfunction.nodejs.npm"
 
   [[order.group]]
-    id = "google.nodejs.functions-framework"
+    id = "openfunction.nodejs.functions-framework"
     optional = true
 
   [[order.group]]
@@ -64,7 +64,7 @@ description = "Ubuntu 18 base image with buildpacks for Nodejs"
 # Node.js functions without a package.json.
 [[order]]
   [[order.group]]
-    id = "google.nodejs.functions-framework"
+    id = "openfunction.nodejs.functions-framework"
 
   [[order.group]]
     id = "google.config.entrypoint"
