@@ -52,6 +52,6 @@ func buildFn(ctx *gcp.Context) error {
 	}
 
 	// Configure the entrypoint for production.
-	ctx.AddWebProcess(command)
+	ctx.AddDefaultWebProcess(command, true)
 	return nil
 }

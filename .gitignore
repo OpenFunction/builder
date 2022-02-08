@@ -6,3 +6,5 @@ builders/testdata/dotnet/*/*/*/obj/
 builders/testdata/java/*/.gradle/
 builders/testdata/generic/*/obj/
 builders/testdata/generic/*/*/obj/
+builders/testdata/java/*/bin/
+builders/testdata/java/*/target/
