@@ -28,8 +28,8 @@ of/node16
 Tag and push:
 
 ```shell
-docker tag of/node16 openfunction/builder-node:v2_16
-docker push openfunction/builder-node:v2_16
+docker tag of/node16 openfunction/builder-node:v2-16
+docker push openfunction/builder-node:v2-16
 ```
 
 ### Test
