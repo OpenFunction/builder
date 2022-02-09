@@ -16,4 +16,4 @@ ARG from_image
 FROM ${from_image}
 
 ENV PORT 8080
-USER cnb
+USER node

@@ -33,6 +33,9 @@ id = "google.nodejs14"
 id = "google.nodejs16"
 
 [[stacks]]
+id = "openfunction.node16"
+
+[[stacks]]
 id = "google.php72"
 
 [[stacks]]

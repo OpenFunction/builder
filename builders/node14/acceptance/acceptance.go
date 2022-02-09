@@ -18,7 +18,7 @@ package acceptance
 const (
 	// Buildpack identifiers used to verify that buildpacks were or were not used.
 	entrypoint      = "google.config.entrypoint"
-	nodeFF          = "google.nodejs.functions-framework"
-	nodeNPM         = "google.nodejs.npm"
-	nodeYarn        = "google.nodejs.yarn"
+	nodeFF          = "openfunction.nodejs.functions-framework"
+	nodeNPM         = "openfunction.nodejs.npm"
+	nodeYarn        = "openfunction.nodejs.yarn"
 )

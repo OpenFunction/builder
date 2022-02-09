@@ -11,6 +11,7 @@ sh_binary(
         "build.Dockerfile",
         "parent.Dockerfile",
         "run.Dockerfile",
+        "parent.alpine.Dockerfile",
         "//licenses:licenses.tar",
     ],
 )

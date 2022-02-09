@@ -73,19 +73,19 @@ description = "Ubuntu 18 base image with buildpacks for .NET, Go, Java, Node.js,
   uri = "java/clear_source.tgz"
 
 [[buildpacks]]
-  id = "google.nodejs.runtime"
+  id = "openfunction.nodejs.runtime"
   uri = "nodejs/runtime.tgz"
 
 [[buildpacks]]
-  id = "google.nodejs.npm"
+  id = "openfunction.nodejs.npm"
   uri = "nodejs/npm.tgz"
 
 [[buildpacks]]
-  id = "google.nodejs.yarn"
+  id = "openfunction.nodejs.yarn"
   uri = "nodejs/yarn.tgz"
 
 [[buildpacks]]
-  id = "google.nodejs.functions-framework"
+  id = "openfunction.nodejs.functions-framework"
   uri = "nodejs/functions_framework.tgz"
 
 [[buildpacks]]
@@ -363,13 +363,13 @@ description = "Ubuntu 18 base image with buildpacks for .NET, Go, Java, Node.js,
 
 [[order]]
   [[order.group]]
-    id = "google.nodejs.runtime"
+    id = "openfunction.nodejs.runtime"
 
   [[order.group]]
-    id = "google.nodejs.yarn"
+    id = "openfunction.nodejs.yarn"
 
   [[order.group]]
-    id = "google.nodejs.functions-framework"
+    id = "openfunction.nodejs.functions-framework"
     optional = true
 
   [[order.group]]
@@ -381,13 +381,13 @@ description = "Ubuntu 18 base image with buildpacks for .NET, Go, Java, Node.js,
 
 [[order]]
   [[order.group]]
-    id = "google.nodejs.runtime"
+    id = "openfunction.nodejs.runtime"
 
   [[order.group]]
-    id = "google.nodejs.npm"
+    id = "openfunction.nodejs.npm"
 
   [[order.group]]
-    id = "google.nodejs.functions-framework"
+    id = "openfunction.nodejs.functions-framework"
     optional = true
 
   [[order.group]]
@@ -404,10 +404,10 @@ description = "Ubuntu 18 base image with buildpacks for .NET, Go, Java, Node.js,
 # Node.js functions without a package.json.
 [[order]]
   [[order.group]]
-    id = "google.nodejs.runtime"
+    id = "openfunction.nodejs.runtime"
 
   [[order.group]]
-    id = "google.nodejs.functions-framework"
+    id = "openfunction.nodejs.functions-framework"
 
   [[order.group]]
     id = "google.config.entrypoint"
@@ -420,7 +420,7 @@ description = "Ubuntu 18 base image with buildpacks for .NET, Go, Java, Node.js,
 # Entrypoint is required because it cannot be read from package.json.
 [[order]]
   [[order.group]]
-    id = "google.nodejs.runtime"
+    id = "openfunction.nodejs.runtime"
 
   [[order.group]]
     id = "google.config.entrypoint"
