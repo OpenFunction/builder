@@ -28,8 +28,8 @@ of/node16
 Tag and push:
 
 ```shell
-docker tag of/node16 openfunction/builder-node:v2-16
-docker push openfunction/builder-node:v2-16
+docker tag of/node16 openfunction/builder-node:v2-16.13
+docker push openfunction/builder-node:v2-16.13
 ```
 
 ### Test
@@ -66,8 +66,8 @@ Build the function:
 
 ```shell
 cd buildpack-samples/sample-functions-framework-node/
-pack build function-node --builder of/node16 --env FUNC_NAME="helloWorld"
-docker run --rm -p8080:8080 function-node
+pack build openfunctiondev/function-node:latest --builder openfunction/builder-node:v2-16.13 --env FUNC_NAME="helloWorld"
+docker run --rm -p8080:8080 openfunctiondev/function-node:latest
 ```
 
 Visit the function:
