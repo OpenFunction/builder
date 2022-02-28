@@ -33,34 +33,34 @@ func TestAcceptance(t *testing.T) {
 		{
 			Name: "function with maven",
 			App:  "maven",
-			Env:  []string{"GOOGLE_FUNCTION_TARGET=functions.HelloWorld"},
+			Env:  []string{"FUNC_NAME=functions.HelloWorld"},
 		},
 		{
 			Name: "function with gradle",
 			App:  "gradle",
-			Env:  []string{"GOOGLE_FUNCTION_TARGET=functions.HelloWorld"},
+			Env:  []string{"FUNC_NAME=functions.HelloWorld"},
 		},
 		{
 			Name:              "function with clear source maven",
 			App:               "maven",
-			Env:               []string{"GOOGLE_FUNCTION_TARGET=functions.HelloWorld", "GOOGLE_CLEAR_SOURCE=true"},
+			Env:               []string{"FUNC_NAME=functions.HelloWorld", "GOOGLE_CLEAR_SOURCE=true"},
 			FilesMustNotExist: []string{"/workspace/src/main/java/functions/HelloWorld.java", "/workspace/pom.xml"},
 		},
 		{
 			Name:              "function with clear source gradle",
 			App:               "gradle",
-			Env:               []string{"GOOGLE_FUNCTION_TARGET=functions.HelloWorld", "GOOGLE_CLEAR_SOURCE=true"},
+			Env:               []string{"FUNC_NAME=functions.HelloWorld", "GOOGLE_CLEAR_SOURCE=true"},
 			FilesMustNotExist: []string{"/workspace/src/main/java/functions/HelloWorld.java", "/workspace/build.gradle"},
 		},
 		{
 			Name: "prebuilt jar",
 			App:  "jar",
-			Env:  []string{"GOOGLE_FUNCTION_TARGET=functions.jar.HelloWorld"},
+			Env:  []string{"FUNC_NAME=functions.jar.HelloWorld"},
 		},
 		{
 			Name: "function with maven wrapper",
 			App:  "mvnw",
-			Env:  []string{"GOOGLE_FUNCTION_TARGET=functions.HelloWorld"},
+			Env:  []string{"FUNC_NAME=functions.HelloWorld"},
 		},
 	}
 	for _, tc := range testCases {
@@ -82,12 +82,12 @@ func TestFailures(t *testing.T) {
 	testCases := []acceptance.FailureTest{
 		{
 			App:       "fail_syntax_error",
-			Env:       []string{"GOOGLE_FUNCTION_TARGET=functions.HelloWorld"},
+			Env:       []string{"FUNC_NAME=functions.HelloWorld"},
 			MustMatch: `\[ERROR\].*not a statement`,
 		},
 		{
 			App:       "fail_two_jars",
-			Env:       []string{"GOOGLE_FUNCTION_TARGET=functions.HelloWorld"},
+			Env:       []string{"FUNC_NAME=functions.HelloWorld"},
 			MustMatch: "function has no pom.xml and more than one jar file: fatjar1.jar, fatjar2.jar",
 		},
 	}

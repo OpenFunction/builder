@@ -30,7 +30,7 @@ func TestDetect(t *testing.T) {
 	}{
 		{
 			name: "with target",
-			env:  []string{"GOOGLE_FUNCTION_TARGET=HelloWorld.Function"},
+			env:  []string{"FUNC_NAME=HelloWorld.Function"},
 			want: 0,
 		},
 		{
