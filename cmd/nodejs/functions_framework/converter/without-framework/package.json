@@ -1,7 +1,7 @@
 {
   "name": "functions-framework",
   "dependencies": {
-    "@google-cloud/functions-framework": "^1.7.1"
+    "@openfunction/functions-framework": "^0.3.4"
   },
   "scripts": {
     "start": "functions-framework"
