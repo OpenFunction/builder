@@ -66,7 +66,8 @@ Build the function:
 
 ```shell
 cd buildpack-samples/sample-functions-framework-node/
-pack build openfunctiondev/function-node:latest --builder openfunction/builder-node:v2-16.13 --env FUNC_NAME="helloWorld"
+pack build openfunctiondev/function-node:v2 --builder openfunction/builder-node:v2-16.13 --env FUNC_NAME="helloWorld" --env FUNC_TYPE="http"
+
 docker run --rm -p8080:8080 openfunctiondev/function-node:latest
 ```
 

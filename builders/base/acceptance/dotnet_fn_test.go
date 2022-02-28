@@ -39,7 +39,7 @@ func TestAcceptanceDotNetFn(t *testing.T) {
 		{
 			Name:       "cs multiple targets",
 			App:        "cs_multiple_targets",
-			Env:        []string{"GOOGLE_FUNCTION_TARGET=TestFunction.Function"},
+			Env:        []string{"FUNC_NAME=TestFunction.Function"},
 			Path:       "/function",
 			MustUse:    []string{dotnetRuntime, dotnetPublish, dotnetFF},
 			MustNotUse: []string{entrypoint},
@@ -47,7 +47,7 @@ func TestAcceptanceDotNetFn(t *testing.T) {
 		{
 			Name:       "fs function",
 			App:        "fs_function",
-			Env:        []string{"GOOGLE_FUNCTION_TARGET=fs_function.Function"},
+			Env:        []string{"FUNC_NAME=fs_function.Function"},
 			Path:       "/function",
 			MustUse:    []string{dotnetRuntime, dotnetPublish, dotnetFF},
 			MustNotUse: []string{entrypoint},
@@ -55,7 +55,7 @@ func TestAcceptanceDotNetFn(t *testing.T) {
 		{
 			Name:       "vb function",
 			App:        "vb_function",
-			Env:        []string{"GOOGLE_FUNCTION_TARGET=vb_function.CloudFunction"},
+			Env:        []string{"FUNC_NAME=vb_function.CloudFunction"},
 			Path:       "/function",
 			MustUse:    []string{dotnetRuntime, dotnetPublish, dotnetFF},
 			MustNotUse: []string{entrypoint},

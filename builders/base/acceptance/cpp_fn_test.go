@@ -31,7 +31,7 @@ func TestAcceptanceCppFn(t *testing.T) {
 		{
 			Name:       "function with additional dependencies",
 			App:        "test_function",
-			Env:        []string{"GOOGLE_FUNCTION_TARGET=test_function"},
+			Env:        []string{"FUNC_NAME=test_function"},
 			Path:       "/test_function",
 			MustUse:    []string{cppFF},
 			MustNotUse: []string{entrypoint},
