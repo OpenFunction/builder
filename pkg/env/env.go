@@ -80,6 +80,12 @@ const (
 	// FunctionSignatureTypeLaunch is a launch time version of FunctionSignatureType.
 	FunctionSignatureTypeLaunch = "FUNCTION_SIGNATURE_TYPE"
 
+	// FunctionsFrameworkVersion is an env var used to specify functions framework version. 
+	// If functions framework version is specified in user function's go.mod, then the version from go.mod will be used.
+	// Else if this env var is specified, the build process will use functions framework version specified in the env var
+	// If this env var is not specified either, the hardcoded functions framework version will be used. 
+	FunctionsFrameworkVersion = "FUNC_FRAMEWORK_VERSION"
+
 	// GoGCFlags is an env var used to pass through compilation flags to the Go compiler.
 	// Example: `-N -l` is used during debugging to disable optimizations and inlining.
 	GoGCFlags = "FUNC_GOGCFLAGS"

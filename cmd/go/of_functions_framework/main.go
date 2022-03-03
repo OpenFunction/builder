@@ -34,7 +34,6 @@ const (
 	gopathLayerName           = "gopath"
 	functionsFrameworkModule  = "github.com/OpenFunction/functions-framework-go"
 	functionsFrameworkPackage = functionsFrameworkModule + "/framework"
-	functionsFrameworkVersion = "v0.1.2-0.20220114080143-12cee748de15"
 	appName                   = "serverless_function_app"
 	fnSourceDir               = "serverless_function_source_code"
 	customPluginDir           = "plugins"
@@ -43,6 +42,7 @@ const (
 var (
 	googleDirs = []string{fnSourceDir, ".googlebuild", ".googleconfig"}
 	tmplV0     = template.Must(template.New("main").Parse(mainTextTemplate))
+	functionsFrameworkVersion = "v0.1.2-0.20220114080143-12cee748de15"
 )
 
 type fnInfo struct {
@@ -89,6 +89,11 @@ func buildFn(ctx *gcp.Context) error {
 		Source:  fnSource,
 		Target:  fnTarget,
 		Package: extractPackageNameInDir(ctx, fnSource),
+	}
+
+	if v, ok := os.LookupEnv(env.FunctionsFrameworkVersion); ok {
+		functionsFrameworkVersion = v
+		ctx.Logf("Use functions framework version from environment variable [%s]", functionsFrameworkVersion)
 	}
 
 	goMod := filepath.Join(fn.Source, "go.mod")
