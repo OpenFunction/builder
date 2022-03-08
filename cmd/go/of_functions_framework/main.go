@@ -40,9 +40,8 @@ const (
 )
 
 var (
-	googleDirs = []string{fnSourceDir, ".googlebuild", ".googleconfig"}
-	tmplV0     = template.Must(template.New("main").Parse(mainTextTemplate))
-	functionsFrameworkVersion = "v0.1.2-0.20220114080143-12cee748de15"
+	tmplV0                    = template.Must(template.New("main").Parse(mainTextTemplate))
+	functionsFrameworkVersion = "v0.2.0"
 )
 
 type fnInfo struct {
