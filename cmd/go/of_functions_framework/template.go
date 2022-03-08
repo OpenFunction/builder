@@ -26,7 +26,6 @@ package main
 
 import (
 	"context"
-	"reflect"
 
 	"k8s.io/klog/v2"
 	"github.com/OpenFunction/functions-framework-go/framework"
@@ -54,14 +53,13 @@ func main() {
 }
 
 func getLocalPlugins() map[string]plugin.Plugin {
-	nilPlugins := map[string]plugin.Plugin{}
 	localPlugins := map[string]plugin.Plugin{
 		{{- range $Plugin := .Plugins }}
 		{{ $Plugin.GetNameFunc }}: {{ $Plugin.NewFunc }},
 		{{- end }}
 	}
 
-	if reflect.DeepEqual(localPlugins, nilPlugins) {
+	if len(localPlugins) == 0 {
 		return nil
 	} else {
 		return localPlugins
