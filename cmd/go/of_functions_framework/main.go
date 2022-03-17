@@ -41,7 +41,7 @@ const (
 
 var (
 	tmplV0                    = template.Must(template.New("main").Parse(mainTextTemplate))
-	functionsFrameworkVersion = "v0.2.0"
+	functionsFrameworkVersion = "v0.2.1"
 )
 
 type fnInfo struct {
