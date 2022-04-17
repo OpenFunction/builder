@@ -30,7 +30,7 @@ import (
 
 const (
 	layerName                 = "functions-framework"
-	functionsFrameworkPackage = "@google-cloud/functions-framework"
+	functionsFrameworkPackage = "@openfunction/functions-framework"
 )
 
 func main() {
