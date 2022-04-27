@@ -287,7 +287,7 @@ func extractPackageNameInDir(ctx *gcp.Context, source string) string {
 // `-- plugins
 //     |-- plugin-a
 //     |   `-- plugin-a.go
-// `-- plugin-b
+//     `-- plugin-b
 //         `-- plugin-b.go
 //
 // In this example, the `plugins` information would look like this:
@@ -319,21 +319,19 @@ func getPlugins(ctx *gcp.Context, fn *fnInfo, pluginDir string) error {
 			plgAbsPath := filepath.Join(pluginDir, plg.Name())
 			plgFiles, err := ioutil.ReadDir(plgAbsPath)
 			if err != nil {
+				ctx.Logf("failed to read directory %s: %s", plgAbsPath, err.Error())
 				continue
 			}
 			if len(plgFiles) < 1 {
+				ctx.Logf("no valid plugin file found in the %s directory", plgAbsPath)
 				continue
 			}
 
 			var aliasName string
-			if strings.Contains(plg.Name(), "-") {
-				plgNameSlice := strings.Split(plg.Name(), "-")
-				aliasName = plgNameSlice[0]
-				for _, s := range plgNameSlice[1:] {
-					aliasName += strings.Title(s)
-				}
-			} else {
-				aliasName = plg.Name()
+			plgNameSlice := strings.Split(plg.Name(), "-")
+			aliasName = plgNameSlice[0]
+			for _, s := range plgNameSlice[1:] {
+				aliasName += strings.Title(s)
 			}
 
 			plugins = append(plugins, Plugin{
