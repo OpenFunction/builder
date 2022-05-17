@@ -21,23 +21,19 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
-	"os/user"
-	"path/filepath"
 	"strings"
 
 	"github.com/GoogleCloudPlatform/buildpacks/pkg/devmode"
 	"github.com/GoogleCloudPlatform/buildpacks/pkg/env"
 	gcp "github.com/GoogleCloudPlatform/buildpacks/pkg/gcpbuildpack"
-	"github.com/GoogleCloudPlatform/buildpacks/pkg/java"
 )
 
 const (
 	// TODO(b/151198698): Automate Maven version updates.
-	mavenVersion = "3.6.3"
-	mavenURL     = "https://downloads.apache.org/maven/maven-3/%[1]s/binaries/apache-maven-%[1]s-bin.tar.gz"
-	mavenLayer   = "maven"
-	m2Layer      = "m2"
-	versionKey   = "version"
+	m2Layer             = "m2"
+	defaultMavenVersion = "3.8.5"
+	mavenURL            = "https://downloads.apache.org/maven/maven-3/%[1]s/binaries/apache-maven-%[1]s-bin.tar.gz"
+	mavenPath           = "/usr/local/maven"
 )
 
 func main() {
@@ -55,35 +51,23 @@ func detectFn(ctx *gcp.Context) (gcp.DetectResult, error) {
 }
 
 func buildFn(ctx *gcp.Context) error {
-	m2CachedRepo := ctx.Layer(m2Layer, gcp.CacheLayer, gcp.LaunchLayerIfDevMode)
-	java.CheckCacheExpiration(ctx, m2CachedRepo)
-
-	usr, err := user.Current()
-	if err != nil {
-		return fmt.Errorf("getting current user: %v", err)
-	}
-	// TODO(b/157297290): just use os.Getenv("HOME") when that is consistent with /etc/passwd.
-	homeM2 := filepath.Join(usr.HomeDir, ".m2")
-	// Symlink the m2 layer into ~/.m2. If ~/.m2 already exists, delete it first.
-	// If it exists as a symlink, RemoveAll will remove the link, not anything it's linked to.
-	// We can't just use `-Dmaven.repo.local`. It does set the path to `m2/repo` but it fails
-	// to set the path to `m2/wrapper` which is used by mvnw to download Maven.
-	ctx.RemoveAll(homeM2)
-	ctx.Symlink(m2CachedRepo.Path, homeM2)
 
 	addJvmConfig(ctx)
 
 	var mvn string
 	if ctx.FileExists("mvnw") {
 		mvn = "./mvnw"
-	} else if mvnInstalled(ctx) {
-		mvn = "mvn"
 	} else {
-		mvn, err = installMaven(ctx)
-		if err != nil {
-			return fmt.Errorf("installing Maven: %w", err)
+		if !mvnInstalled() {
+			if err := installMaven(ctx); err != nil {
+				return fmt.Errorf("installing Maven: %w", err)
+			}
 		}
+
+		mvn = "mvn"
 	}
+
+	ctx.Exec([]string{mvn, "-v"}, gcp.WithUserAttribution)
 
 	command := []string{mvn, "clean", "package", "--batch-mode", "-DskipTests", "-Dhttp.keepAlive=false"}
 
@@ -102,6 +86,7 @@ func buildFn(ctx *gcp.Context) error {
 
 	// Store the build steps in a script to be run on each file change.
 	if devmode.Enabled(ctx) {
+		m2CachedRepo := ctx.Layer(m2Layer, gcp.CacheLayer, gcp.LaunchLayerIfDevMode)
 		devmode.WriteBuildScript(ctx, m2CachedRepo.Path, "~/.m2", command)
 	}
 
@@ -132,34 +117,31 @@ func addJvmConfig(ctx *gcp.Context) {
 	}
 }
 
-func mvnInstalled(ctx *gcp.Context) bool {
-	result := ctx.Exec([]string{"bash", "-c", "command -v mvn || true"})
-	return result.Stdout != ""
+func mvnInstalled() bool {
+	if version := os.Getenv(env.MavenVersion); version != "" && version != defaultMavenVersion {
+		return false
+	}
+	return true
 }
 
-// installMaven installs Maven and returns the path of the mvn binary
-func installMaven(ctx *gcp.Context) (string, error) {
-	mvnl := ctx.Layer(mavenLayer, gcp.CacheLayer, gcp.BuildLayer, gcp.LaunchLayerIfDevMode)
+// installMaven installs Maven
+func installMaven(ctx *gcp.Context) error {
 
-	// Check the metadata in the cache layer to determine if we need to proceed.
-	metaVersion := ctx.GetMetadata(mvnl, versionKey)
-	if mavenVersion == metaVersion {
-		ctx.CacheHit(mavenLayer)
-		ctx.Logf("Maven cache hit, skipping installation.")
-		return filepath.Join(mvnl.Path, "bin", "mvn"), nil
-	}
-	ctx.CacheMiss(mavenLayer)
-	ctx.ClearLayer(mvnl)
-
+	mavenVersion := os.Getenv(env.MavenVersion)
 	// Download and install maven in layer.
 	ctx.Logf("Installing Maven v%s", mavenVersion)
 	archiveURL := fmt.Sprintf(mavenURL, mavenVersion)
 	if code := ctx.HTTPStatus(archiveURL); code != http.StatusOK {
-		return "", gcp.UserErrorf("Maven version %s does not exist at %s (status %d).", mavenVersion, archiveURL, code)
+		return gcp.UserErrorf("Maven version %s does not exist at %s (status %d).", mavenVersion, archiveURL, code)
 	}
-	command := fmt.Sprintf("curl --fail --show-error --silent --location --retry 3 %s | tar xz --directory %s --strip-components=1", archiveURL, mvnl.Path)
+	command := fmt.Sprintf("curl --fail --show-error --silent --location --retry 3 %s | tar xz --directory %s", archiveURL, mavenPath)
+	ctx.Exec([]string{"bash", "-c", command}, gcp.WithUserAttribution)
+	command = fmt.Sprintf("rm -rf %s/current", mavenPath)
+	ctx.Exec([]string{"bash", "-c", command}, gcp.WithUserAttribution)
+	command = fmt.Sprintf("ln -s %s/apache-maven-%s %s/current", mavenPath, mavenVersion, mavenPath)
+	ctx.Exec([]string{"bash", "-c", command}, gcp.WithUserAttribution)
+	command = fmt.Sprintf("rm -rf %s/apache-maven-%s", mavenPath, defaultMavenVersion)
 	ctx.Exec([]string{"bash", "-c", command}, gcp.WithUserAttribution)
 
-	ctx.SetMetadata(mvnl, versionKey, mavenVersion)
-	return filepath.Join(mvnl.Path, "bin", "mvn"), nil
+	return nil
 }

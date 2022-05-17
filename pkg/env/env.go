@@ -80,10 +80,10 @@ const (
 	// FunctionSignatureTypeLaunch is a launch time version of FunctionSignatureType.
 	FunctionSignatureTypeLaunch = "FUNCTION_SIGNATURE_TYPE"
 
-	// FunctionsFrameworkVersion is an env var used to specify functions framework version. 
+	// FunctionsFrameworkVersion is an env var used to specify functions framework version.
 	// If functions framework version is specified in user function's go.mod, then the version from go.mod will be used.
 	// Else if this env var is specified, the build process will use functions framework version specified in the env var
-	// If this env var is not specified either, the hardcoded functions framework version will be used. 
+	// If this env var is not specified either, the hardcoded functions framework version will be used.
 	FunctionsFrameworkVersion = "FUNC_FRAMEWORK_VERSION"
 
 	// GoGCFlags is an env var used to pass through compilation flags to the Go compiler.
@@ -105,6 +105,20 @@ const (
 	// label on the final container of "abc=Some-Value". The label key itself is
 	// lowercased, underscores changed to dashes, and is prefixed with "google.".
 	LabelPrefix = "FUNC_LABEL_"
+
+	// MavenVersion is the version of maven. If not set, the maven version will be 3.8.5.
+	MavenVersion = "MVN_VERSION"
+	// GradleVersion is the version of gradle. If not set, the maven version will be 7.4.2.
+	GradleVersion = "GRADLE_VERSION"
+	// FunctionFrameworkJar is the path of function framework jar, can be a url or a local path.
+	FunctionFrameworkJar        = "FUNCTION_FRAMEWORK"
+	MavenRepository             = "MAVEN_REPOSITORY"
+	FunctionFrameworkGroup      = "FUNCTION_FRAMEWORK_GROUP"
+	FunctionFrameworkArtifactID = "FUNCTION_FRAMEWORK_ARTIFCATID"
+	FunctionFrameworkVersion    = "FUNCTION_FRAMEWORK_VERSION"
+
+	// FunctionClasspath is the classpath for java where to load the function jar.
+	FunctionClasspath = "FUNCTION_CLASSPATH"
 )
 
 // IsDebugMode returns true if the buildpack debug mode is enabled.

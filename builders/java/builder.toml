@@ -1,0 +1,64 @@
+description = "Ubuntu 18 base image with buildpacks for Nodejs"
+
+[[buildpacks]]
+  id = "openfunction.java.functions-framework"
+  uri = "java/functions_framework.tgz"
+
+[[buildpacks]]
+  id = "openfunction.java.gradle"
+  uri = "java/gradle.tgz"
+
+[[buildpacks]]
+  id = "openfunction.java.maven"
+  uri = "java/maven.tgz"
+
+[[buildpacks]]
+  id = "google.java.clear_source"
+  uri = "java/clear_source.tgz"
+
+[[buildpacks]]
+  id = "google.utils.label"
+  uri = "label.tgz"
+
+########
+# Java #
+########
+
+# Functions have separate groups because entrypoint not supported.
+[[order]]
+  [[order.group]]
+    id = "openfunction.java.maven"
+
+  [[order.group]]
+    id = "openfunction.java.functions-framework"
+
+  [[order.group]]
+    id = "google.java.clear_source"
+    optional = true
+
+  [[order.group]]
+    id = "google.utils.label"
+
+[[order]]
+  [[order.group]]
+    id = "openfunction.java.gradle"
+    optional = true
+
+  [[order.group]]
+    id = "openfunction.java.functions-framework"
+
+  [[order.group]]
+    id = "google.java.clear_source"
+    optional = true
+
+  [[order.group]]
+    id = "google.utils.label"
+
+# Currently built with //builders/java/stack/stack:build.
+[stack]
+  id = "openfunction.java< JAVA_VERSION >"
+  build-image = "< REGISTRY >/buildpacks-java< JAVA_VERSION >-build:v1"
+  run-image = "< REGISTRY >/buildpacks-java< JAVA_VERSION >-run:v1"
+
+[lifecycle]
+  version = "0.13.2"

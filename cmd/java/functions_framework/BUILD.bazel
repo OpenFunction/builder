@@ -16,6 +16,7 @@ buildpack(
     ],
     visibility = [
         "//builders:java_builders",
+        "//builders:__subpackages__",
     ],
 )
 
@@ -28,9 +29,11 @@ go_binary(
         "-w",
     ],
     deps = [
+        "//pkg/devmode",
         "//pkg/env",
         "//pkg/gcpbuildpack",
         "@com_github_buildpacks_libcnb//:go_default_library",
+        "@com_github_beevik_etree//:go_default_library",
     ],
 )
 
