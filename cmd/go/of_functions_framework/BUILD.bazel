@@ -8,9 +8,9 @@ licenses(["notice"])
 buildpack(
     name = "of_functions_framework",
     srcs = [
-        "converter/get_package/main.go",
         "converter/without-framework/go.mod",
         "converter/without-framework/main.go",
+        "//cmd/go/of_functions_framework/converter/get_package:main.go",
     ],
     executables = [
         ":main",
@@ -24,6 +24,7 @@ go_binary(
     name = "main",
     srcs = [
         "main.go",
+        "template_declarative.go",
         "template.go",
     ],
     # Strip debugging information to reduce binary size.

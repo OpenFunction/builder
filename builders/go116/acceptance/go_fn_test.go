@@ -44,6 +44,30 @@ func TestAcceptanceGoFn(t *testing.T) {
 			MustUse:    []string{goFF, goBuild},
 			MustNotUse: []string{entrypoint},
 		},
+		{
+			Name:       "declarative http function with framework",
+			App:        "declarative_http_with_framework",
+			Path:       "/Func",
+			Env:        []string{"FUNC_NAME=Func"},
+			MustUse:    []string{goFF, goBuild},
+			MustNotUse: []string{entrypoint},
+		},
+		{
+			Name:       "declarative http function with framework go sum",
+			App:        "declarative_http_with_framework_go_sum",
+			Path:       "/Func",
+			Env:        []string{"FUNC_NAME=Func"},
+			MustUse:    []string{goFF, goBuild},
+			MustNotUse: []string{entrypoint},
+		},
+		{
+			Name:       "declarative http function with framework multiple",
+			App:        "declarative_http_with_framework_multiple",
+			Path:       "/anotherfunc",
+			Env:        []string{"FUNC_NAME=AnotherFunc"},
+			MustUse:    []string{goFF, goBuild},
+			MustNotUse: []string{entrypoint},
+		},
 	}
 	for _, tc := range testCases {
 		tc := tc
