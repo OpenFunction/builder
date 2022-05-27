@@ -21,8 +21,8 @@ bazel run --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //builders/go
 This command creates two images:
 
 ```shell
-openfunctiondev/buildpacks-run-go:v2.3.0
-openfunctiondev/buildpacks-go116-build:v2.3.0
+openfunctiondev/buildpacks-run-go:v2.3.0-1.16
+openfunctiondev/buildpacks-go116-build:v2.3.0-1.16
 ```
 
 ## Build go116 builder
@@ -36,13 +36,13 @@ bazel build --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //builders/
 This command creates one image:
 
 ```shell
-openfunction/builder-go:v2.3.0
+openfunction/builder-go:v2.3.0-1.16
 ```
 
 Tag and push:
 
 ```shell
-docker tag openfunction/builder-go:v2.3.0 openfunction/builder-go:v2.3.0-1.16
+docker tag openfunction/builder-go:v2.3.0-1.16 openfunction/builder-go:v2.3.0
 docker push openfunction/builder-go:v2.3.0
 docker push openfunction/builder-go:v2.3.0-1.16
 ```
@@ -89,7 +89,7 @@ Build the function:
 
 ```shell
 cd samples/functions/Knative/hello-world-go
-pack build func-helloworld-go --builder openfunction/builder-go:v2.3.0 --env FUNC_NAME="HelloWorld"  --env FUNC_CLEAR_SOURCE=true
+pack build func-helloworld-go --builder openfunction/builder-go:v2.3.0-1.16 --env FUNC_NAME="HelloWorld"  --env FUNC_CLEAR_SOURCE=true
 docker run --rm --env="FUNC_CONTEXT={\"name\":\"HelloWorld\",\"version\":\"v1.0.0\",\"port\":\"8080\",\"runtime\":\"Knative\"}" --env="CONTEXT_MODE=self-host" --name func-helloworld-go -p 8080:8080 func-helloworld-go
 ```
 
@@ -125,7 +125,7 @@ Build the function:
 
 ```shell
 cd buildpack-samples/sample-functions-framework-go/
-pack build function-go --builder openfunction/builder-go:v2.3.0 --env FUNC_NAME="HelloWorld"
+pack build function-go --builder openfunction/builder-go:v2.3.0-1.16 --env FUNC_NAME="HelloWorld"
 docker run --rm -p8080:8080 function-go
 ```
 
@@ -160,7 +160,7 @@ spec:
   image: "<your registry name>/sample-go116-func:latest"
   # port: 8080 # default to 8080
   build:
-    builder: "openfunction/builder-go:v2.3.0"
+    builder: "openfunction/builder-go:v2.3.0-1.16"
     params:
       FUNC_NAME: "HelloWorld"
       FUNC_TYPE: "http"
