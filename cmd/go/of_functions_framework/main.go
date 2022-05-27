@@ -44,7 +44,7 @@ const (
 var (
 	tmplV0                    = template.Must(template.New("main").Parse(mainTextTemplate))
 	tmplDeclarative           = template.Must(template.New("main_declarative").Parse(mainTextTemplateDeclarative))
-	functionsFrameworkVersion = "v0.2.4"
+	functionsFrameworkVersion = "v0.3.0"
 )
 
 type fnInfo struct {

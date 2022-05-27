@@ -1,6 +1,12 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_test")
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_binary", "go_test")
 
 licenses(["notice"])
+
+go_library(
+    name = "main_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/OpenFunction/builder/" + package_name(),
+)
 
 go_binary(
     name = "main",
@@ -11,9 +17,9 @@ go_test(
     name = "main_test",
     size = "small",
     srcs = ["main_test.go"],
-    embed = [":main"],
+    embed = [":main_lib"],
     rundir = ".",
-    deps = ["@com_github_google_go-cmp//cmp:go_default_library"],
+    deps = ["@com_github_google_go_cmp//cmp:go_default_library"],
 )
 
 exports_files(["main.go"])

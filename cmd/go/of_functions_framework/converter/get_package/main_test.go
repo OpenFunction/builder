@@ -37,7 +37,7 @@ func TestExtract(t *testing.T) {
 import (
 	"context"
 	"log"
-	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
+	"github.com/OpenFunction/functions-framework-go/functions"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
 )
 func init() {
@@ -48,9 +48,9 @@ func HelloStorage(ctx context.Context, e cloudevents.Event) error {
 	return nil
 }`,
 				"go.mod": `module example.com/cloudeventfunction
-go 1.13
+go 1.16
 require (
-	github.com/GoogleCloudPlatform/functions-framework-go v1.4.1
+	github.com/OpenFunction/functions-framework-go v0.3.0
 	github.com/cloudevents/sdk-go/v2 v2.2.0
 )`,
 			},
@@ -58,9 +58,9 @@ require (
 				Name: "cloudeventfunction",
 				Imports: map[string]struct{}{
 					"context": struct{}{},
-					"github.com/GoogleCloudPlatform/functions-framework-go/functions": struct{}{},
-					"github.com/cloudevents/sdk-go/v2":                                struct{}{},
-					"log":                                                             struct{}{},
+					"github.com/OpenFunction/functions-framework-go/functions": struct{}{},
+					"github.com/cloudevents/sdk-go/v2":                         struct{}{},
+					"log":                                                      struct{}{},
 				},
 			},
 		}, {
@@ -78,7 +78,7 @@ func HelloStorage(ctx context.Context, e cloudevents.Event) error {
 }`,
 				"init.go": `package cloudeventfunction
 import (
-	"github.com/GoogleCloudPlatform/functions-framework-go/functions"
+	"github.com/OpenFunction/functions-framework-go/functions"
 )
 func init() {
 	functions.CloudEvent("HelloStorage", HelloStorage)
@@ -88,9 +88,9 @@ func init() {
 				Name: "cloudeventfunction",
 				Imports: map[string]struct{}{
 					"context": struct{}{},
-					"github.com/GoogleCloudPlatform/functions-framework-go/functions": struct{}{},
-					"github.com/cloudevents/sdk-go/v2":                                struct{}{},
-					"log":                                                             struct{}{},
+					"github.com/OpenFunction/functions-framework-go/functions": struct{}{},
+					"github.com/cloudevents/sdk-go/v2":                         struct{}{},
+					"log":                                                      struct{}{},
 				},
 			},
 		},
