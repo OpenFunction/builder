@@ -1,5 +1,5 @@
-github.com/OpenFunction/functions-framework-go v0.2.4-0.20220522032227-798fc07f54e5 h1:GE6K6FHTEBeWeVCtVngiqDCEMlEgFp+ygNvJUXWHb6U=
-github.com/OpenFunction/functions-framework-go v0.2.4-0.20220522032227-798fc07f54e5/go.mod h1:DbssgwZJRVd8VOls6aLpQwqBWu6gbDM4G+7RwwCJMEQ=
+github.com/OpenFunction/functions-framework-go v0.2.4 h1:OG8+R7ExZ9mKwR5M2ewYNE+qpEcTjFHe53YwtX4pRCA=
+github.com/OpenFunction/functions-framework-go v0.2.4/go.mod h1:DbssgwZJRVd8VOls6aLpQwqBWu6gbDM4G+7RwwCJMEQ=
 github.com/cloudevents/sdk-go/v2 v2.4.1 h1:rZJoz9QVLbWQmnvLPDFEmv17Czu+CfSPwMO6lhJ72xQ=
 github.com/cloudevents/sdk-go/v2 v2.4.1/go.mod h1:MZiMwmAh5tGj+fPFvtHv9hKurKqXtdB9haJYMJ/7GJY=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
