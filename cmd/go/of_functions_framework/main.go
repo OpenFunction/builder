@@ -17,6 +17,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -30,25 +31,33 @@ import (
 )
 
 const (
-	layerName                 = "functions-framework"
-	gopathLayerName           = "gopath"
-	functionsFrameworkModule  = "github.com/OpenFunction/functions-framework-go"
-	functionsFrameworkPackage = functionsFrameworkModule + "/framework"
-	appName                   = "serverless_function_app"
-	fnSourceDir               = "serverless_function_source_code"
-	customPluginDir           = "plugins"
+	layerName                          = "functions-framework"
+	gopathLayerName                    = "gopath"
+	functionsFrameworkModule           = "github.com/OpenFunction/functions-framework-go"
+	functionsFrameworkPackage          = functionsFrameworkModule + "/framework"
+	functionsFrameworkFunctionsPackage = functionsFrameworkModule + "/functions"
+	appName                            = "serverless_function_app"
+	fnSourceDir                        = "serverless_function_source_code"
+	customPluginDir                    = "plugins"
 )
 
 var (
 	tmplV0                    = template.Must(template.New("main").Parse(mainTextTemplate))
-	functionsFrameworkVersion = "v0.2.3"
+	tmplDeclarative           = template.Must(template.New("main_declarative").Parse(mainTextTemplateDeclarative))
+	functionsFrameworkVersion = "v0.3.0"
 )
 
 type fnInfo struct {
 	Source  string
 	Target  string
 	Package string
+	Imports map[string]struct{}
 	Plugins []Plugin
+}
+
+type parsedPackage struct {
+	Name    string              `json:"name"`
+	Imports map[string]struct{} `json:"imports"`
 }
 
 type Plugin struct {
@@ -84,10 +93,15 @@ func buildFn(ctx *gcp.Context) error {
 	ctx.Exec([]string{"bash", "-c", command}, gcp.WithUserTimingAttribution)
 
 	fnSource := filepath.Join(ctx.ApplicationRoot(), fnSourceDir)
+	pkg, err := extractPackageNameInDir(ctx, fnSource)
+	if err != nil {
+		return gcp.UserErrorf("error extracting package name: %v", err)
+	}
 	fn := fnInfo{
 		Source:  fnSource,
 		Target:  fnTarget,
-		Package: extractPackageNameInDir(ctx, fnSource),
+		Package: pkg.Name,
+		Imports: pkg.Imports,
 	}
 
 	if v, ok := os.LookupEnv(env.FunctionsFrameworkVersion); ok {
@@ -241,7 +255,13 @@ func createMainGoFile(ctx *gcp.Context, fn fnInfo, main, version string) error {
 	f := ctx.CreateFile(main)
 	defer f.Close()
 
-	if err := tmplV0.Execute(f, fn); err != nil {
+	tmpl := tmplDeclarative
+	if _, ok := fn.Imports[functionsFrameworkFunctionsPackage]; !ok {
+		// By default, use the v0 template.
+		tmpl = tmplV0
+	}
+
+	if err := tmpl.Execute(f, fn); err != nil {
 		return fmt.Errorf("executing template: %v", err)
 	}
 	return nil
@@ -271,11 +291,19 @@ func frameworkSpecifiedVersion(ctx *gcp.Context, fnSource string) (string, error
 // The parser is dependent on the language version being used, and it's highly likely that the buildpack binary
 // will be built with a different version of the language than the function deployment. Building this script ensures
 // that the version of Go used to build the function app will be the same as the version used to parse it.
-func extractPackageNameInDir(ctx *gcp.Context, source string) string {
+func extractPackageNameInDir(ctx *gcp.Context, source string) (*parsedPackage, error) {
 	script := filepath.Join(ctx.BuildpackRoot(), "converter", "get_package", "main.go")
 	cacheDir := ctx.TempDir("", appName)
 	defer ctx.RemoveAll(cacheDir)
-	return ctx.Exec([]string{"go", "run", script, "-dir", source}, gcp.WithEnv("GOCACHE="+cacheDir), gcp.WithUserAttribution).Stdout
+	stdout := ctx.Exec([]string{"go", "run", script, "-dir", source}, gcp.WithEnv("GOCACHE="+cacheDir), gcp.WithUserAttribution).Stdout
+
+	var pkg parsedPackage
+	fmt.Printf("function package: %v", stdout)
+	if err := json.Unmarshal([]byte(stdout), &pkg); err != nil {
+		return nil, fmt.Errorf("unable to parse function package: %v", err)
+	}
+
+	return &pkg, nil
 }
 
 // getPlugins() iterates through the "plugins" directory to get information about valid plugins

@@ -31,7 +31,7 @@ set -euo pipefail
 DIR="$(dirname "$1")"
 LICENSES="$2"
 
-TAG="v2"
+TAG="v2.3.0-1.16"
 
 # Extract licenses.tar because it is symlinked, which Docker does not support.
 readonly TEMP="$(mktemp -d)"
@@ -48,4 +48,4 @@ docker build -t "go116run" - < "${DIR}/run.busybox.Dockerfile"
 echo "> Building openfunctiondev/buildpacks-run-go:$TAG"
 docker build --build-arg "from_image=go116run" -t "openfunctiondev/buildpacks-run-go:$TAG" - < "${DIR}/run.Dockerfile"
 echo "> Building openfunctiondev/buildpacks-go116-build:$TAG"
-docker build --build-arg "from_image=go116common" -t "openfunctiondev/buildpacks-go116-build:$TAG" -f "${DIR}/build.Dockerfile" "${TEMP}"
+cat "${DIR}/build.Dockerfile" | docker build --build-arg "from_image=go116common" -t "openfunctiondev/buildpacks-go116-build:$TAG" -f - "${TEMP}"
