@@ -7,6 +7,7 @@
 | openfunction/builder-go:v0.2.2-1.16 | Buildpacks: v0.2.2, Go: 1.16 | [v0.0.0-20210628081257-4137e46a99a6](https://github.com/OpenFunction/functions-framework-go/commit/4137e46a99a6e97f1ff808b4d92ca5f76412f0cc) |
 | openfunction/builder-go:v0.3.0-1.16 | Buildpacks: v0.3.0, Go: 1.16 | [v0.0.0-20210922063920-81a7b2951b8a](https://github.com/OpenFunction/functions-framework-go/commit/81a7b2951b8af0897978dcc483c1217ac98f02fb) |
 | openfunction/builder-go:v0.4.0-1.16 | Buildpacks: v0.4.0, Go: 1.16 | [v0.1.1](https://github.com/OpenFunction/functions-framework-go/releases/tag/v0.1.1) |
+| openfunction/builder-go:v2-1.16 | Buildpacks: v0.5.0, Go: 1.16 | [v0.2.3](https://github.com/OpenFunction/functions-framework-go/releases/tag/v0.2.3) |
 | openfunction/builder-go:v3-1.16 | Buildpacks: v0.6.0, Go: 1.16 | [v0.2.4-0.20220522032227-798fc07f54e5](https://github.com/OpenFunction/functions-framework-go/commit/798fc07f54e582f4f8fc3eb9b4aa27b08de380f4) |
 
 ## Build go116 stack
