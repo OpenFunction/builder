@@ -25,6 +25,9 @@ jobs:
       - name: Use bazel
         run: bazel --version
         
+      - name: Setup pack
+        uses: buildpacks/github-actions/setup-pack@v4.1.0
+        
       - name: Build node16 stack
         run: bazel run //builders/node16/stack:build
         
