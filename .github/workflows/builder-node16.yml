@@ -28,6 +28,9 @@ jobs:
       - name: Setup pack
         uses: buildpacks/github-actions/setup-pack@v4.1.0
         
+      - name: Setup container-structure-test
+        run: curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64 && chmod +x container-structure-test-linux-amd64 && mkdir -p $HOME/bin && export PATH=$PATH:$HOME/bin && mv container-structure-test-linux-amd64 $HOME/bin/container-structure-test
+        
       - name: Build node16 stack
         run: bazel run //builders/node16/stack:build
         
