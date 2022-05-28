@@ -1,0 +1,44 @@
+name: Publish Node16 Image
+
+on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+    
+      - name: Install Bazel
+        run: wget -O - https://github.com/bazelbuild/bazel/releases/download/5.1.1/bazel-5.1.1-installer-linux-x86_64.sh | bash --user
+        
+      - name: Build node16 stack
+        run: bazel run //builders/node16/stack:build
+        
+      - name: Build node16 builder
+        run: bazel build //builders/node16:builder.image
+        
+#       - name: Test node16
+#         run: bazel test //builders/node16/acceptance/...
+     
+      - name: Tag the image
+        run: docker tag of/node16 openfunction/builder-node:v2-16.15
+        
+#       - uses: mr-smithers-excellent/docker-build-push@v5
+#         with:
+#           image: openfunction/builder-node
+#           tags: v2-16.15, latest
+#           registry: docker.io
+#           username: ${{ secrets.DOCKER_USERNAME }}
+#           password: ${{ secrets.DOCKER_PASSWORD }}
+        
+      
