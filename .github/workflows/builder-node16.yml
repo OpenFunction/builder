@@ -18,8 +18,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
     
-      - name: Install Bazel
-        run: wget -O - https://github.com/bazelbuild/bazel/releases/download/5.1.1/bazel-5.1.1-installer-linux-x86_64.sh | bash --user
+      - name: Setup bazel
+        uses: jwlawson/actions-setup-bazel@v1
+        with:
+          bazel-version: '5.1.1'
+      - name: Use bazel
+        run: bazel --version
         
       - name: Build node16 stack
         run: bazel run //builders/node16/stack:build
