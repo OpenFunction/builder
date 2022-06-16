@@ -3,30 +3,26 @@ load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
 licenses(["notice"])
 
 go_library(
-    name = "dotnet",
-    srcs = [
-        "dotnet.go",
-    ],
+    name = "release",
+    srcs = ["release.go"],
     importpath = "github.com/GoogleCloudPlatform/buildpacks/" + package_name(),
     visibility = [
+        "//builders/dotnet:__subpackages__",
         "//cmd/dotnet:__subpackages__",
+        "//pkg/dotnet:__subpackages__",
     ],
-    deps = [
-        "//pkg/dotnet/release/client",
-        "//pkg/env",
-        "//pkg/gcpbuildpack",
-    ],
+    deps = ["//pkg/dotnet/release/client"],
 )
 
 go_test(
-    name = "dotnet_test",
+    name = "release_test",
     size = "small",
-    srcs = ["dotnet_test.go"],
+    srcs = ["release_test.go"],
     data = glob(["testdata/**"]),
-    embed = [":dotnet"],
+    embed = [":release"],
     rundir = ".",
     deps = [
-        "//pkg/gcpbuildpack",
+        "//pkg/dotnet/release/client",
         "//pkg/testdata",
     ],
 )

@@ -1,0 +1,18 @@
+load("//tools:defs.bzl", "builder")
+
+package(default_visibility = ["//builders/dotnet:__subpackages__"])
+
+licenses(["notice"])
+
+builder(
+    name = "builder",
+    buildpacks = [
+        "//cmd/config/entrypoint:entrypoint.tgz",
+        "//cmd/dotnet/functions_framework:functions_framework.tgz",
+        "//cmd/dotnet/publish:publish.tgz",
+        "//cmd/dotnet/runtime:runtime.tgz",
+        "//cmd/utils/archive_source:archive_source.tgz",
+        "//cmd/utils/label:label.tgz",
+    ],
+    image = "of/dotnet",
+)

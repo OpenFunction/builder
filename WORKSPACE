@@ -33,6 +33,13 @@ load("@bazel_gazelle//:deps.bzl", "gazelle_dependencies", "go_repository")
 gazelle_dependencies()
 
 go_repository(
+    name = "com_github_masterminds_semver",
+    importpath = "github.com/Masterminds/semver/v3",
+    sum = "h1:znjIyLfpXEDQjOIEWh+ehwpTU14UzUPub3c3sm36u14=",
+    version = "v3.0.3",
+)
+
+go_repository(
     name = "com_github_blang_semver",
     importpath = "github.com/blang/semver",
     sum = "h1:8fBbhRkI5/0ocLFbrhPgnGUm0ogc+Gko1cRodPWDKX4=",
@@ -65,6 +72,21 @@ go_repository(
     importpath = "github.com/golang/protobuf",
     sum = "h1:+Z5KGCizgyZCbGh1KZqA0fcLLkwbsjIzS4aV2v7wJX0=",
     version = "v1.4.2",
+)
+
+go_repository(
+    name = "com_github_hashicorp_go_cleanhttp",
+    importpath = "github.com/hashicorp/go-cleanhttp",
+    sum = "h1:7grUmExFpuImbExUwBHg1rGb3KOIk0eDA8AKtOT0s78=",
+    version = "v0.5.2-0.20190406162018-d3fcbee8e181",
+)
+
+
+go_repository(
+    name = "com_github_hashicorp_go_retryablehttp",
+    importpath = "github.com/hashicorp/go-retryablehttp",
+    sum = "h1:8/CAEZt/+F7kR7GevNHulKkUjLht3CPmn7egmhieNKo=",
+    version = "v0.6.7",
 )
 
 go_repository(

@@ -11,7 +11,7 @@ buildpack(
         ":main",
     ],
     visibility = [
-        "//builders:dotnet_builders",
+        "//builders:dotnet_builders"
     ],
 )
 

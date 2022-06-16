@@ -16,6 +16,7 @@ package_group(
     name = "dotnet_builders",
     packages = [
         "//builders/base",
+        "//builders/dotnet",
     ],
 )
 

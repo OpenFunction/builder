@@ -1,0 +1,66 @@
+description = "Unified builder for the .NET runtime"
+
+[[buildpacks]]
+  id = "google.config.entrypoint"
+  uri = "entrypoint.tgz"
+
+[[buildpacks]]
+  id = "google.dotnet.functions-framework"
+  uri = "functions_framework.tgz"
+
+[[buildpacks]]
+  id = "google.dotnet.publish"
+  uri = "publish.tgz"
+
+[[buildpacks]]
+  id = "google.dotnet.runtime"
+  uri = "runtime.tgz"
+
+[[buildpacks]]
+  id = "google.utils.archive-source"
+  uri = "archive_source.tgz"
+
+[[buildpacks]]
+  id = "google.utils.label"
+  uri = "label.tgz"
+
+
+# Cloud Run / General purpose order group
+[[order]]
+
+  [[order.group]]
+    id = "google.dotnet.functions-framework"
+    optional = true
+
+  [[order.group]]
+    id = "google.dotnet.runtime"
+
+  [[order.group]]
+    id = "google.dotnet.publish"
+
+  [[order.group]]
+    id = "google.config.entrypoint"
+    optional = true
+
+  [[order.group]]
+    id = "google.utils.label"
+
+# Prebuilt .NET applications.
+[[order]]
+
+  [[order.group]]
+    id = "google.dotnet.runtime"
+
+  [[order.group]]
+    id = "google.config.entrypoint"
+
+  [[order.group]]
+    id = "google.utils.label"
+
+[stack]
+  id = "openfunction.dotnet"
+  build-image = "gcr.io/gae-runtimes/buildpacks/stacks/google-gae-18/build"
+  run-image = "gcr.io/gae-runtimes/buildpacks/stacks/google-gae-18/run"
+
+[lifecycle]
+  version = "0.13.3"

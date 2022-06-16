@@ -18,9 +18,13 @@ import (
 	"encoding/xml"
 	"io/ioutil"
 	"os"
+	"path"
 	"path/filepath"
 	"reflect"
 	"testing"
+
+	gcp "github.com/GoogleCloudPlatform/buildpacks/pkg/gcpbuildpack"
+	"github.com/GoogleCloudPlatform/buildpacks/pkg/testdata"
 )
 
 func TestReadProjectFile(t *testing.T) {
@@ -75,5 +79,202 @@ func TestReadProjectFile(t *testing.T) {
 	}
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("ReadProjectFile\ngot %#v\nwant %#v", got, want)
+	}
+}
+
+func TestRuntimeConfigJSONFiles(t *testing.T) {
+	testCases := []struct {
+		Name                 string
+		TestDataRelativePath string
+		ExpectedResult       []string
+	}{
+		{
+			Name:                 "single file in same directory",
+			TestDataRelativePath: "subdir",
+			ExpectedResult:       []string{"subdir/my.runtimeconfig.json"},
+		},
+		{
+			Name:                 "single file in sub-directory",
+			TestDataRelativePath: "another_dir",
+			ExpectedResult:       []string{"another_dir/with_subfolder/another.runtimeconfig.json"},
+		},
+		{
+			Name:                 "multiple entries",
+			TestDataRelativePath: "",
+			ExpectedResult: []string{
+				"another_dir/with_subfolder/another.runtimeconfig.json",
+				"runtimeconfig.json/test.runtimeconfig.json",
+				"subdir/my.runtimeconfig.json",
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			rootDir := testdata.MustGetPath("testdata/runtimeconfig")
+			tstDir := path.Join(rootDir, tc.TestDataRelativePath)
+			files, err := RuntimeConfigJSONFiles(tstDir)
+			if err != nil {
+				t.Fatalf("RuntimeConfigFiles(%v) got error: %v", tstDir, err)
+			}
+			// the test cases are written without the full path to make writing test cases easier
+			// prepend the tstDir to the relative paths to get the true expected result
+			fullPathExpectedResults := make([]string, 0, len(tc.ExpectedResult))
+			for _, val := range tc.ExpectedResult {
+				fullPathExpectedResults = append(fullPathExpectedResults, path.Join(rootDir, val))
+			}
+			if !reflect.DeepEqual(files, fullPathExpectedResults) {
+				t.Errorf("RuntimeConfigFiles(%v) = %q, want %q", tstDir, files, fullPathExpectedResults)
+			}
+		})
+	}
+}
+
+func TestReadRuntimeConfigJSON(t *testing.T) {
+	path := "testdata/runtimeconfig/subdir/my.runtimeconfig.json"
+	rtCfg, err := ReadRuntimeConfigJSON(testdata.MustGetPath(path))
+	if err != nil {
+		t.Fatalf("ReadRuntimeConfigJSON(%v) got error: %v", path, err)
+	}
+	expectedTFM := "netcoreapp3.1"
+	if rtCfg.RuntimeOptions.TFM != expectedTFM {
+		t.Errorf("unexpected tfm value: got %q, want %q", rtCfg.RuntimeOptions.TFM, expectedTFM)
+	}
+}
+
+func TestGetSDKorRuntimeVersion(t *testing.T) {
+	testCases := []struct {
+		Name                 string
+		RuntimeVersionEnvVar string
+		ApplicationRoot      string
+		ExpectedResult       string
+	}{
+		{
+			Name:                 "Should read from env var",
+			RuntimeVersionEnvVar: "2.1.100",
+			ApplicationRoot:      "",
+			ExpectedResult:       "2.1.100",
+		},
+		{
+			Name:                 "Env var should take precedence over global.json",
+			RuntimeVersionEnvVar: "2.1.100",
+			ApplicationRoot:      testdata.MustGetPath("testdata/"),
+			ExpectedResult:       "2.1.100",
+		},
+		{
+			Name:                 "Should read from global.json",
+			RuntimeVersionEnvVar: "",
+			ApplicationRoot:      testdata.MustGetPath("testdata/"),
+			ExpectedResult:       "3.1.100",
+		},
+		{
+			Name:                 "Should read from global.json",
+			RuntimeVersionEnvVar: "",
+			ApplicationRoot:      testdata.MustGetPath("testdata/"),
+			ExpectedResult:       "3.1.100",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			ctx := gcp.NewContext(gcp.WithApplicationRoot(tc.ApplicationRoot))
+			os.Setenv("GOOGLE_RUNTIME_VERSION", tc.RuntimeVersionEnvVar)
+
+			result, err := GetSDKVersion(ctx)
+
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+			if tc.ExpectedResult != result {
+				t.Fatalf("result mismatch: got %q, want %q", result, tc.ExpectedResult)
+			}
+		})
+	}
+}
+
+func Test_getSDKChannelForTargetFramework(t *testing.T) {
+	testCases := []struct {
+		Name                 string
+		TargetFrameworkValue string
+		ExpectedOK           bool
+		ExpectedResult       string
+	}{
+		{
+			Name:                 "Empty",
+			TargetFrameworkValue: "",
+			ExpectedOK:           false,
+			ExpectedResult:       "",
+		},
+		{
+			Name:                 "NetCore 1.0",
+			TargetFrameworkValue: "netcoreapp1.0",
+			ExpectedOK:           true,
+			ExpectedResult:       "1.0",
+		},
+		{
+			Name:                 "NetCore 2.0",
+			TargetFrameworkValue: "netcoreapp2.0",
+			ExpectedOK:           true,
+			ExpectedResult:       "2.2",
+		},
+		{
+			Name:                 "NetCore 2.1",
+			TargetFrameworkValue: "netcoreapp2.1",
+			ExpectedOK:           true,
+			ExpectedResult:       "2.2",
+		},
+		{
+			Name:                 "NetCore 2.2",
+			TargetFrameworkValue: "netcoreapp2.2",
+			ExpectedOK:           true,
+			ExpectedResult:       "2.2",
+		},
+		{
+			Name:                 "NetCore 3.0",
+			TargetFrameworkValue: "netcoreapp3.0",
+			ExpectedOK:           true,
+			ExpectedResult:       "3.1",
+		},
+		{
+			Name:                 "NetCore 3.1",
+			TargetFrameworkValue: "netcoreapp3.1",
+			ExpectedOK:           true,
+			ExpectedResult:       "3.1",
+		},
+		{
+			Name:                 ".NET 5.0",
+			TargetFrameworkValue: "net5.0",
+			ExpectedOK:           true,
+			ExpectedResult:       "5.0",
+		},
+		{
+			Name:                 ".NET 6.0",
+			TargetFrameworkValue: "net6.0",
+			ExpectedOK:           true,
+			ExpectedResult:       "6.0",
+		},
+		{
+			Name:                 "Future version",
+			TargetFrameworkValue: "net9.0",
+			ExpectedOK:           true,
+			ExpectedResult:       "9.0",
+		},
+		{
+			Name:                 "Garbage value",
+			TargetFrameworkValue: "python3.7",
+			ExpectedOK:           false,
+			ExpectedResult:       "",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			result, ok := getSDKChannelForTargetFramework(tc.TargetFrameworkValue)
+
+			if ok != tc.ExpectedOK || result != tc.ExpectedResult {
+				t.Errorf("getSDKChannelForTargetFramework(%v) = (%v, %v), want (%v, %v)", tc.TargetFrameworkValue,
+					result, ok, tc.ExpectedResult, tc.ExpectedOK)
+			}
+		})
 	}
 }

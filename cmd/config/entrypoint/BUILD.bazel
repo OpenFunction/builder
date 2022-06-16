@@ -9,11 +9,12 @@ buildpack(
         ":main",
     ],
     visibility = [
+        "//builders:dotnet_builders",
         "//builders:go_builders",
         "//builders:java_builders",
         "//builders:nodejs_builders",
         "//builders:python_builders",
-        "//builders:ruby_builders",
+        "//builders:ruby_builders"
     ],
 )
 

@@ -1,0 +1,30 @@
+load("//internal/acceptance:defs.bzl", "acceptance_test_suite")
+
+licenses(["notice"])
+
+exports_files(["config.yaml"])
+
+test_suite(
+    # run all tests in this BUILD
+    name = "acceptance_test",
+)
+
+VERSION_DOTNET3 = "3.1.416"
+
+VERSION_DOTNET6 = "6.0.300"
+
+VERSIONS_ALL = [
+    VERSION_DOTNET3,
+    # .NET6 is enabled for testing across all products to prepare for it's release
+    # Delete this comment when dotnet6 or versionless dotnet is released
+    VERSION_DOTNET6,
+]
+
+VERSIONS_WITH_GCF_SUPPORT = VERSIONS_ALL
+
+VERSIONS_WITH_GCP_SUPPORT = VERSIONS_ALL
+
+COMMON_DEPS = [
+    "//pkg/dotnet/release",
+    "//pkg/dotnet/release/client",
+]
