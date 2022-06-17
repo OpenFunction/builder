@@ -11,7 +11,7 @@ buildpack(
         ":main",
     ],
     visibility = [
-        "//builders:dotnet_builders"
+        "//builders:dotnet_builders",
     ],
 )
 
@@ -40,7 +40,7 @@ go_test(
     embed = [":main"],
     rundir = ".",
     deps = [
+        "//internal/buildpacktest",
         "//pkg/gcpbuildpack",
-        "@com_github_buildpacks_libcnb//:go_default_library",
     ],
 )
