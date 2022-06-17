@@ -58,7 +58,7 @@ description = "Unified builder for the .NET runtime"
     id = "google.utils.label"
 
 [stack]
-  id = "openfunction.dotnet"
+  id = "openfunction.dotnet6"
   build-image = "openfunctiondev/buildpacks-dotnet6-build:v1"
   run-image = "openfunctiondev/buildpacks-dotnet6-run:v1"
 
