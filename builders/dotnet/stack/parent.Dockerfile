@@ -35,8 +35,8 @@ LABEL io.buildpacks.stack.id=${stack_id}
 RUN groupadd cnb --gid ${cnb_gid} && \
   useradd --uid ${cnb_uid} --gid ${cnb_gid} -m -s /bin/bash cnb
 
-RUN curl --fail --show-error --silent --location --retry 3  https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb 
-RUN sudo dpkg -i packages-microsoft-prod.deb
+RUN curl --fail --show-error --silent --location --retry 3  -o packages-microsoft-prod.deb https://packages.microsoft.com/config/ubuntu/18.04/packages-microsoft-prod.deb
+RUN dpkg -i packages-microsoft-prod.deb
 RUN rm packages-microsoft-prod.deb 
 ENV CNB_USER_ID=${cnb_uid}
 ENV CNB_GROUP_ID=${cnb_gid}
