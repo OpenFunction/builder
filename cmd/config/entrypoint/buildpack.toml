@@ -19,3 +19,6 @@ id = "openfunction.go116"
 
 [[stacks]]
 id = "openfunction.node16"
+
+[[stacks]]
+id = "openfunction.dotnet6"

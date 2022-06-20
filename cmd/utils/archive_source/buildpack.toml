@@ -9,6 +9,9 @@ name = "Utils - Archive Source"
 id = "google.dotnet3"
 
 [[stacks]]
+id = "openfunction.dotnet6"
+
+[[stacks]]
 id = "google.go113"
 
 [[stacks]]

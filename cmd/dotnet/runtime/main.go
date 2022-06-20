@@ -96,11 +96,18 @@ func buildSDKLayer(ctx *gcp.Context, version string, isDevMode bool) error {
 	
 	ctx.CacheMiss(sdkLayerName)
 	ctx.ClearLayer(sdkl)
-
+	dlAndInstallSDK(ctx, sdkl, version, isDevMode)
 	ctx.SetMetadata(sdkl, versionKey, cacheHitValue)
 	return nil
 }
 
+func dlAndInstallSDK(ctx *gcp.Context, sdkl *libcnb.Layer, version string, isDevMode bool) error {
+	if _, err := runtime.InstallTarballIfNotCached(ctx, runtime.DotnetSDK, version, sdkl); err != nil {
+		return err
+	}
+	setSDKEnvVars(sdkl, isDevMode)
+	return nil
+}
 
 func setSDKEnvVars(sdkl *libcnb.Layer, isDevMode bool) {
 	if isDevMode {

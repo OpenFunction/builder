@@ -5,6 +5,7 @@ licenses(["notice"])
 go_library(
     name = "runtime",
     srcs = [
+        "install.go",
         "runtime.go",
     ],
     importpath = "github.com/GoogleCloudPlatform/buildpacks/" + package_name(),
@@ -24,6 +25,7 @@ go_library(
 go_test(
     name = "runtime_test",
     srcs = [
+        "install_test.go",
         "runtime_test.go",
     ],
     data = glob(["testdata/**"]),

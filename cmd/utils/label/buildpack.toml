@@ -12,6 +12,9 @@ id = "google"
 id = "google.dotnet3"
 
 [[stacks]]
+id = "openfunction.dotnet6"
+
+[[stacks]]
 id = "openfunction.go115"
 
 [[stacks]]
