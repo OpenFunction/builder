@@ -114,12 +114,12 @@ func buildFn(ctx *gcp.Context) error {
 
 	// Configure the entrypoint for production.
 	if !devmode.Enabled(ctx) {
-		ctx.AddWebProcess([]string{"/bin/bash", "-c", entrypoint})
+		ctx.AddDefaultWebProcess([]string{"/bin/bash", "-c", entrypoint},true)
 		return nil
 	}
 
 	// Configure the entrypoint and metadata for dev mode.
-	ctx.AddWebProcess([]string{"dotnet", "watch", "--project", proj, "run"})
+	ctx.AddDefaultWebProcess([]string{"dotnet", "watch", "--project", proj, "run"}, true)
 	devmode.AddSyncMetadata(ctx, devmode.DotNetSyncRules)
 	return nil
 }

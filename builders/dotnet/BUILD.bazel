@@ -14,5 +14,5 @@ builder(
         "//cmd/utils/archive_source:archive_source.tgz",
         "//cmd/utils/label:label.tgz",
     ],
-    image = "of/dotnet",
+    image = "openfunction/builder-dotnet:v1",
 )

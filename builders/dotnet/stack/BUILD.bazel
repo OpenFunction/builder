@@ -11,7 +11,7 @@ sh_binary(
         "build.Dockerfile",
         "parent.Dockerfile",
         "run.Dockerfile",
-        "parent.alpine.Dockerfile",
+        "parent.cbl-mariner2.0-distroless.Dockerfile",
         "//licenses:licenses.tar",
     ],
 )
