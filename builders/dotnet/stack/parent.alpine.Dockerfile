@@ -13,8 +13,8 @@
 # limitations under the License.
 FROM mcr.microsoft.com/dotnet/aspnet:6.0.6-alpine3.16
 
-ARG cnb_uid=1000
-ARG cnb_gid=1000
+ARG cnb_uid=1111
+ARG cnb_gid=1111
 ARG stack_id="openfunction.dotnet6"
 LABEL io.buildpacks.stack.id=${stack_id}
 

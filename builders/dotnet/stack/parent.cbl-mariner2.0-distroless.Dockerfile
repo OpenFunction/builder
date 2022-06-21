@@ -11,10 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-FROM mcr.microsoft.com/dotnet/aspnet:6.0.6-alpine3.16
+FROM mcr.microsoft.com/dotnet/runtime-deps:6.0-cbl-mariner2.0-distroless  
 
-ARG cnb_uid=1000
-ARG cnb_gid=1000
+ARG cnb_uid=101 
+ARG cnb_gid=101 
 ARG stack_id="openfunction.dotnet6"
 LABEL io.buildpacks.stack.id=${stack_id}
 

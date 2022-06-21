@@ -93,7 +93,7 @@ func buildFn(ctx *gcp.Context) error {
 	if args := os.Getenv(env.BuildArgs); args != "" {
 		// Use bash to excute the command to avoid havnig to parse the build arguments.
 		// strings.Fields may be unsafe here in case some arguments have a space.
-		cmd = []string{"/bin/bash", "-c", strings.Join(append(cmd, args), " ")}
+		cmd = []string{"/bin/sh", "-c", strings.Join(append(cmd, args), " ")}
 	}
 
 	ctx.Exec(cmd, gcp.WithEnv("DOTNET_CLI_TELEMETRY_OPTOUT=true"), gcp.WithUserAttribution)
@@ -101,7 +101,7 @@ func buildFn(ctx *gcp.Context) error {
 	// Infer the entrypoint in case an explicit override was not provided.
 	entrypoint := os.Getenv(env.Entrypoint)
 	if entrypoint != "" {
-		entrypoint = "exec " + entrypoint
+		// entrypoint = "exec " + entrypoint
 	} else {
 		ep, err := getEntrypoint(ctx, outputDirectory, proj)
 		if err != nil {
@@ -114,7 +114,7 @@ func buildFn(ctx *gcp.Context) error {
 
 	// Configure the entrypoint for production.
 	if !devmode.Enabled(ctx) {
-		ctx.AddDefaultWebProcess([]string{"/bin/bash", "-c", entrypoint},true)
+		ctx.AddDefaultWebProcess([]string{entrypoint}, true)
 		return nil
 	}
 
@@ -151,7 +151,7 @@ func getEntrypoint(ctx *gcp.Context, bin, proj string) (string, error) {
 
 func getEntrypointCmd(ctx *gcp.Context, ep string) string {
 	if dll := ep + ".dll"; ctx.FileExists(dll) {
-		return fmt.Sprintf("cd %s && exec dotnet %s", path.Dir(dll), path.Base(dll))
+		return fmt.Sprintf("dotnet %s",path.Base(dll))
 	}
 	return ""
 }
