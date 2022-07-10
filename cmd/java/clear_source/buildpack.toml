@@ -9,4 +9,13 @@ name = "Java - Clear Source"
 id = "google"
 
 [[stacks]]
-id = "google.java11"
+id = "openfunction.java11"
+
+[[stacks]]
+id = "openfunction.java16"
+
+[[stacks]]
+id = "openfunction.java17"
+
+[[stacks]]
+id = "openfunction.java18"

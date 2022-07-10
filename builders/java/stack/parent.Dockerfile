@@ -14,26 +14,16 @@
 
 ARG from_image
 FROM ${from_image}
-COPY licenses/ /usr/local/share/licenses/buildpacks/
 
-# build-essential is required by many usecases.
-# git is required for some project dependencies.
-# python3 is required by node-gyp to compile native modules.
-# unzip is required to extract gradle.
-# xz-utils is required to install nodejs/runtime.
-RUN apt-get update && apt-get install -y --no-install-recommends \
-  build-essential \
-  git \
-  python3 \
-  tar \
-  zip \
-  unzip \
-  xz-utils \
-  g++-8 \
-  gcc-8 \
-  zlib1g-dev \
-  libstdc++-8-dev \
-  pkg-config \
-  && apt-get clean && rm -rf /var/lib/apt/lists/*
+ARG cnb_uid=1000
+ARG cnb_gid=1000
+ARG stack_id="openfunction.java< JAVA_VERSION >"
 
-USER cnb
+LABEL io.buildpacks.stack.id=${stack_id}
+
+RUN groupadd cnb --gid ${cnb_gid} && \
+  useradd --uid ${cnb_uid} --gid ${cnb_gid} -m -s /bin/bash cnb
+
+ENV CNB_USER_ID=${cnb_uid}
+ENV CNB_GROUP_ID=${cnb_gid}
+ENV CNB_STACK_ID=${stack_id}

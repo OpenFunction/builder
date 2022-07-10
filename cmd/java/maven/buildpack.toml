@@ -1,12 +1,21 @@
 api = "0.7"
 
 [buildpack]
-id = "google.java.maven"
-version = "0.9.0"
+id = "openfunction.java.maven"
+version = "1.0.0"
 name = "Java - Maven"
 
 [[stacks]]
-id = "google"
+id = "openfunction"
 
 [[stacks]]
-id = "google.java11"
+id = "openfunction.java11"
+
+[[stacks]]
+id = "openfunction.java16"
+
+[[stacks]]
+id = "openfunction.java17"
+
+[[stacks]]
+id = "openfunction.java18"

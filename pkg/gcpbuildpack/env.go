@@ -24,6 +24,7 @@ import (
 // SetFunctionsEnvVars sets launch-time functions environment variables.
 func (ctx *Context) SetFunctionsEnvVars(l *libcnb.Layer) {
 	if target := os.Getenv(env.FunctionTarget); target != "" {
+		l.LaunchEnvironment.Default(env.FunctionTarget, target)
 		l.LaunchEnvironment.Default(env.FunctionTargetLaunch, target)
 	} else {
 		ctx.Exit(1, UserErrorf("required env var %s not found", env.FunctionTarget))
