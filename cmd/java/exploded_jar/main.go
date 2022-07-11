@@ -38,6 +38,6 @@ func buildFn(ctx *gcp.Context) error {
 	if err != nil {
 		return fmt.Errorf("extracting Main-Class from %s: %w", java.ManifestPath, err)
 	}
-	ctx.AddWebProcess([]string{"java", "-classpath", ".", main})
+	ctx.AddDefaultWebProcess([]string{"java", "-classpath", ".", main}, true)
 	return nil
 }

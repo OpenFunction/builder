@@ -313,3 +313,10 @@ go_repository(
     sum = "h1:4MY060fB1DLGMB/7MBTLnwQUY6+F09GEiz6SsrNqyzM=",
     version = "v1.23.0",
 )
+
+go_repository(
+    name = "com_github_beevik_etree",
+    importpath = "github.com/beevik/etree",
+    sum = "h1:T0xke/WvNtMoCqgzPhkX2r4rjY3GDZFi+FjpRZY2Jbs=",
+    version = "v1.1.0",
+)

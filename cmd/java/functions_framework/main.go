@@ -22,24 +22,27 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/GoogleCloudPlatform/buildpacks/pkg/devmode"
 	"github.com/GoogleCloudPlatform/buildpacks/pkg/env"
 	gcp "github.com/GoogleCloudPlatform/buildpacks/pkg/gcpbuildpack"
+	"github.com/beevik/etree"
 	"github.com/buildpacks/libcnb"
 )
 
 const (
-	layerName                     = "functions-framework"
-	javaFunctionInvokerURLBase    = "https://maven-central.storage-download.googleapis.com/maven2/com/google/cloud/functions/invoker/java-function-invoker/"
-	defaultFrameworkVersion       = "1.0.2"
-	functionsFrameworkURLTemplate = javaFunctionInvokerURLBase + "%[1]s/java-function-invoker-%[1]s.jar"
-	versionKey                    = "version"
+	layerName = "functions-framework"
+
+	defaultMavenRepository     = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+	defaultFrameworkGroup      = "dev.openfunction.functions"
+	defaultFrameworkArtifactID = "functions-framework-invoker"
+	defaultFrameworkVersion    = "1.0.0-SNAPSHOT"
 )
 
 func main() {
 	gcp.Main(detectFn, buildFn)
 }
 
-func detectFn(ctx *gcp.Context) (gcp.DetectResult, error) {
+func detectFn(_ *gcp.Context) (gcp.DetectResult, error) {
 	if _, ok := os.LookupEnv(env.FunctionTarget); ok {
 		return gcp.OptInEnvSet(env.FunctionTarget), nil
 	}
@@ -48,6 +51,7 @@ func detectFn(ctx *gcp.Context) (gcp.DetectResult, error) {
 
 func buildFn(ctx *gcp.Context) error {
 	layer := ctx.Layer(layerName)
+	layer.Launch = true
 
 	if err := installFunctionsFramework(ctx, layer); err != nil {
 		return err
@@ -57,6 +61,7 @@ func buildFn(ctx *gcp.Context) error {
 	if err != nil {
 		return err
 	}
+	layer.LaunchEnvironment.Default(env.FunctionClasspath, classpath)
 
 	ctx.SetFunctionsEnvVars(layer)
 
@@ -67,15 +72,15 @@ func buildFn(ctx *gcp.Context) error {
 	// required interfaces, for example. But it eliminates the commonest problem of specifying the wrong target.
 	// We use an ExecUser* method so that the time taken by the javap command is counted as user time.
 	target := os.Getenv(env.FunctionTarget)
-	if result, err := ctx.ExecWithErr([]string{"javap", "-classpath", classpath, target}, gcp.WithUserAttribution); err != nil {
+	if _, err := ctx.ExecWithErr([]string{"javap", "-classpath", classpath, target}, gcp.WithUserAttribution); err != nil {
 		// The javap error output will typically be "Error: class not found: foo.Bar".
-		return gcp.UserErrorf("build succeeded but did not produce the class %q specified as the function target: %s", target, result.Combined)
+		return gcp.UserErrorf("build succeeded but did not produce the class %q specified as the function target: %s", target, (*err).Error())
 	}
 
 	launcherSource := filepath.Join(ctx.BuildpackRoot(), "launch.sh")
 	launcherTarget := filepath.Join(layer.Path, "launch.sh")
 	createLauncher(ctx, launcherSource, launcherTarget)
-	ctx.AddWebProcess([]string{launcherTarget, "java", "-jar", filepath.Join(layer.Path, "functions-framework.jar"), "--classpath", classpath})
+	ctx.AddDefaultWebProcess([]string{launcherTarget, "java", "-jar", filepath.Join(layer.Path, "functions-framework.jar")}, true)
 
 	return nil
 }
@@ -121,8 +126,13 @@ func mavenClasspath(ctx *gcp.Context) (string, error) {
 		mvn = "./mvnw"
 	}
 
+	command := []string{mvn, "--batch-mode", "dependency:copy-dependencies"}
+	if !ctx.Debug() && !devmode.Enabled(ctx) {
+		command = append(command, "--quiet")
+	}
+
 	// Copy the dependencies of the function (`<dependencies>` in pom.xml) into target/dependency.
-	ctx.Exec([]string{mvn, "--batch-mode", "dependency:copy-dependencies"}, gcp.WithUserAttribution)
+	ctx.Exec(command, gcp.WithUserAttribution)
 
 	// Extract the artifact/version coordinates from the user's pom.xml definitions.
 	// mvn help:evaluate is quite slow so we do it this way rather than calling it twice.
@@ -160,7 +170,9 @@ func gradleClasspath(ctx *gcp.Context) (string, error) {
 	if err != nil {
 		return "", gcp.InternalErrorf("opening build.gradle for appending: %v", err)
 	}
-	defer f.Close()
+	defer func() {
+		_ = f.Close()
+	}()
 	if _, err := f.Write(extraTasksText); err != nil {
 		return "", gcp.InternalErrorf("appending extra definitions to build.gradle: %v", err)
 	}
@@ -181,35 +193,80 @@ func gradleClasspath(ctx *gcp.Context) (string, error) {
 }
 
 func installFunctionsFramework(ctx *gcp.Context, layer *libcnb.Layer) error {
-	layer.Launch = true
-	layer.Cache = true
-	frameworkVersion := defaultFrameworkVersion
-	// TODO(emcmanus): extract framework version from pom.xml if present
 
-	// Install functions-framework.
-	metaVersion := ctx.GetMetadata(layer, versionKey)
-	if frameworkVersion == metaVersion {
-		ctx.CacheHit(layerName)
-	} else {
-		ctx.CacheMiss(layerName)
-		ctx.ClearLayer(layer)
-		if err := installFramework(ctx, layer, frameworkVersion); err != nil {
+	ffName := filepath.Join(layer.Path, "functions-framework.jar")
+	if jarPath, ok := os.LookupEnv(env.FunctionFrameworkJar); ok {
+		if strings.HasPrefix(jarPath, "http") || strings.HasPrefix(jarPath, "https") {
+			return downloadFramework(ctx, ffName, jarPath)
+		} else {
+			_, err := ctx.ExecWithErr([]string{"bash", "-c", fmt.Sprintf("mv %s %s", jarPath, ffName)})
 			return err
 		}
-		ctx.SetMetadata(layer, versionKey, frameworkVersion)
 	}
+
+	mavenRepository := os.Getenv(env.MavenRepository)
+	if mavenRepository == "" {
+		mavenRepository = defaultMavenRepository
+	}
+
+	frameworkGroup := os.Getenv(env.FunctionFrameworkGroup)
+	if frameworkGroup == "" {
+		frameworkGroup = defaultFrameworkGroup
+	}
+	frameworkGroup = strings.ReplaceAll(frameworkGroup, ".", "/")
+
+	frameworkArtifactID := os.Getenv(env.FunctionFrameworkArtifactID)
+	if frameworkArtifactID == "" {
+		frameworkArtifactID = defaultFrameworkArtifactID
+	}
+
+	frameworkVersion := os.Getenv(env.FunctionFrameworkVersion)
+	if frameworkVersion == "" {
+		frameworkVersion = defaultFrameworkVersion
+	}
+
+	artifact := fmt.Sprintf("%s-jar-with-dependencies.jar", frameworkArtifactID)
+	if strings.HasSuffix(frameworkVersion, "-SNAPSHOT") {
+		version, err := getSnapshotVersion(ctx, mavenRepository, frameworkGroup, frameworkArtifactID, frameworkVersion)
+		if err != nil {
+			return err
+		}
+
+		artifact = fmt.Sprintf("%s-%s-jar-with-dependencies.jar", frameworkArtifactID, version)
+	}
+
+	url := fmt.Sprintf("%s/%s/%s/%s/%s", mavenRepository, frameworkGroup, frameworkArtifactID, frameworkVersion, artifact)
+
+	return downloadFramework(ctx, ffName, url)
+}
+
+func downloadFramework(ctx *gcp.Context, name, url string) error {
+	_, err := ctx.ExecWithErr([]string{"curl", "--silent", "--fail", "--show-error", "--output", name, url})
+	if err != nil {
+		return gcp.InternalErrorf("fetching functions framework jar[%s]: %s", url, err.Error())
+	}
+
+	ctx.Logf("fetching functions framework jar from %s", url)
+
 	return nil
 }
 
-func installFramework(ctx *gcp.Context, layer *libcnb.Layer, version string) error {
-	url := fmt.Sprintf(functionsFrameworkURLTemplate, version)
-	ffName := filepath.Join(layer.Path, "functions-framework.jar")
-	result, err := ctx.ExecWithErr([]string{"curl", "--silent", "--fail", "--show-error", "--output", ffName, url})
-	// We use ExecWithErr rather than plain Exec because if it fails we want to exit with an error message better
-	// than "Failure: curl: (22) The requested URL returned error: 404".
-	// TODO(b/155874677): use plain Exec once it gives sufficient error messages.
-	if err != nil {
-		return gcp.InternalErrorf("fetching functions framework jar: %v\n%s", err, result.Stderr)
+func getSnapshotVersion(ctx *gcp.Context, mavenRepository, frameworkGroup, frameworkArtifactID, frameworkVersion string) (string, error) {
+
+	url := fmt.Sprintf("%s/%s/%s/%s/maven-metadata.xml", mavenRepository, frameworkGroup, frameworkArtifactID, frameworkVersion)
+	if _, err := ctx.ExecWithErr([]string{"curl", "--silent", "--fail", "--show-error", "--output", "/tmp/maven-metadata.xml", url}); err != nil {
+		return "", gcp.InternalErrorf("fetching functions framework metadata[%s]: %s", url, err.Error())
 	}
-	return nil
+
+	doc := etree.NewDocument()
+	if err := doc.ReadFromFile("/tmp/maven-metadata.xml"); err != nil {
+		return "", gcp.InternalErrorf("parse functions framework metadata[%s]: %s", url, err.Error())
+	}
+
+	element := doc.FindElement("//metadata/versioning/snapshotVersions/snapshotVersion[classifier='jar-with-dependencies'][extension='jar']/value")
+	if element != nil {
+		return element.Text(), nil
+	}
+
+	return "", nil
 }

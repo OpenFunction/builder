@@ -10,6 +10,7 @@ buildpack(
     ],
     visibility = [
         "//builders:java_builders",
+        "//builders:__subpackages__",
     ],
 )
 
