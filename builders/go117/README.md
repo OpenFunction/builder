@@ -43,8 +43,8 @@ openfunction/builder-go:v2.4.0-1.17
 Tag and push:
 
 ```shell
-docker tag openfunction/builder-go:v2.4.0-1.17 openfunction/builder-go:v2.3.0
-docker push openfunction/builder-go:v2.3.0
+docker tag openfunction/builder-go:v2.4.0-1.17 openfunction/builder-go:v2.4.0
+docker push openfunction/builder-go:v2.4.0
 docker push openfunction/builder-go:v2.4.0-1.17
 ```
 
