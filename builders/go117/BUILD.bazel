@@ -1,0 +1,22 @@
+load("//tools:defs.bzl", "builder")
+
+licenses(["notice"])
+
+builder(
+    name = "builder",
+    buildpacks = [
+        "//cmd/config/entrypoint:entrypoint.tgz",
+        "//cmd/utils/label:label.tgz",
+    ],
+    groups = {
+        "go": [
+            "//cmd/go/build:build.tgz",
+            "//cmd/go/clear_source:clear_source.tgz",
+            "//cmd/go/of_functions_framework:of_functions_framework.tgz",
+        ],
+    },
+    image = "openfunction/builder-go:v2.4.0-1.17",
+    visibility = [
+        "//builders/go117/acceptance:__pkg__",
+    ],
+)
