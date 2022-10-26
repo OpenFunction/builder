@@ -3,7 +3,7 @@
 Use the follow command to build a java builder.
 
 ```shell
-hack/build.sh --with-stack --java-version < java_version > --docker-registry < registry >
+hack/build.sh java --with-stack --java-version < java_version > --docker-registry < registry >
 ```
 
 This command will create three image:
