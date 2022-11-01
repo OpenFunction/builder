@@ -65,16 +65,9 @@ func buildFn(ctx *gcp.Context) error {
 
 	ctx.SetFunctionsEnvVars(layer)
 
-	// Use javap to check that the class is indeed in the classpath we just determined.
-	// On success, it will output a description of the class and its public members, which we discard.
-	// On failure it will output an error saying what's wrong (usually that the class doesn't exist).
-	// Success here doesn't guarantee that the function will execute. It might not implement one of the
-	// required interfaces, for example. But it eliminates the commonest problem of specifying the wrong target.
-	// We use an ExecUser* method so that the time taken by the javap command is counted as user time.
-	target := os.Getenv(env.FunctionTarget)
-	if _, err := ctx.ExecWithErr([]string{"javap", "-classpath", classpath, target}, gcp.WithUserAttribution); err != nil {
-		// The javap error output will typically be "Error: class not found: foo.Bar".
-		return gcp.UserErrorf("build succeeded but did not produce the class %q specified as the function target: %s", target, (*err).Error())
+	// Check that the classes are indeed in the classpath we just determined.
+	if !checkTargets(ctx, classpath) {
+		return gcp.UserErrorf("build succeeded but did not produce the target classes")
 	}
 
 	launcherSource := filepath.Join(ctx.BuildpackRoot(), "launch.sh")
@@ -83,6 +76,26 @@ func buildFn(ctx *gcp.Context) error {
 	ctx.AddDefaultWebProcess([]string{launcherTarget, "java", "-jar", filepath.Join(layer.Path, "functions-framework.jar")}, true)
 
 	return nil
+}
+
+// checkTargets use javap to check that the class is indeed in the classpath we just determined.
+// On success, it will output a description of the class and its public members, which we discard.
+// On failure it will output an error saying what's wrong (usually that the class doesn't exist).
+// Success here doesn't guarantee that the function will execute. It might not implement one of the
+// required interfaces, for example. But it eliminates the commonest problem of specifying the wrong target.
+// We use an ExecUser* method so that the time taken by the javap command is counted as user time.
+func checkTargets(ctx *gcp.Context, classpath string) bool {
+	targets := strings.Split(os.Getenv(env.FunctionTarget), ",")
+	success := true
+	for _, target := range targets {
+		cmd := []string{"javap", "-classpath", classpath, target}
+		if _, err := ctx.ExecWithErr(cmd, gcp.WithUserAttribution); err != nil {
+			// The javap error output will typically be "Error: class not found: foo.Bar".
+			success = false
+		}
+	}
+
+	return success
 }
 
 func createLauncher(ctx *gcp.Context, launcherSource, launcherTarget string) {
