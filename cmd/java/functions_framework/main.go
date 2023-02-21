@@ -32,10 +32,10 @@ import (
 const (
 	layerName = "functions-framework"
 
-	defaultMavenRepository     = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+	defaultMavenRepository     = "https://repo.maven.apache.org/maven2/"
 	defaultFrameworkGroup      = "dev.openfunction.functions"
 	defaultFrameworkArtifactID = "functions-framework-invoker"
-	defaultFrameworkVersion    = "1.0.0-SNAPSHOT"
+	defaultFrameworkVersion    = "1.0.0"
 )
 
 func main() {
@@ -239,18 +239,19 @@ func installFunctionsFramework(ctx *gcp.Context, layer *libcnb.Layer) error {
 	}
 
 	artifact := fmt.Sprintf("%s-jar-with-dependencies.jar", frameworkArtifactID)
+	version := frameworkVersion
 	if strings.HasSuffix(frameworkVersion, "-SNAPSHOT") {
-		version, err := getSnapshotVersion(ctx, mavenRepository, frameworkGroup, frameworkArtifactID, frameworkVersion)
+		var err error
+		version, err = getSnapshotVersion(ctx, mavenRepository, frameworkGroup, frameworkArtifactID, frameworkVersion)
 		if err != nil {
 			return err
 		}
-
-		artifact = fmt.Sprintf("%s-%s-jar-with-dependencies.jar", frameworkArtifactID, version)
 	}
 
+	artifact = fmt.Sprintf("%s-%s-jar-with-dependencies.jar", frameworkArtifactID, version)
 	url := fmt.Sprintf("%s/%s/%s/%s/%s", mavenRepository, frameworkGroup, frameworkArtifactID, frameworkVersion, artifact)
 
-	return downloadFramework(ctx, ffName, url)
+	return downloadFramework(ctx, ffName, strings.ReplaceAll(url, "//", "/"))
 }
 
 func downloadFramework(ctx *gcp.Context, name, url string) error {
