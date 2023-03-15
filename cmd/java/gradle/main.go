@@ -49,7 +49,6 @@ func detectFn(ctx *gcp.Context) (gcp.DetectResult, error) {
 }
 
 func buildFn(ctx *gcp.Context) error {
-
 	var gradle string
 	if ctx.FileExists("gradlew") {
 		gradle = "./gradlew"

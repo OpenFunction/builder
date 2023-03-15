@@ -22,7 +22,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/GoogleCloudPlatform/buildpacks/pkg/devmode"
 	"github.com/GoogleCloudPlatform/buildpacks/pkg/env"
 	gcp "github.com/GoogleCloudPlatform/buildpacks/pkg/gcpbuildpack"
 	"github.com/beevik/etree"
@@ -32,10 +31,11 @@ import (
 const (
 	layerName = "functions-framework"
 
-	defaultMavenRepository     = "https://repo.maven.apache.org/maven2/"
-	defaultFrameworkGroup      = "dev.openfunction.functions"
-	defaultFrameworkArtifactID = "functions-framework-invoker"
-	defaultFrameworkVersion    = "1.0.0"
+	defaultMavenRepository         = "https://repo.maven.apache.org/maven2/"
+	defaultMavenSnapshotRepository = "https://s01.oss.sonatype.org/content/repositories/snapshots"
+	defaultFrameworkGroup          = "dev.openfunction.functions"
+	defaultFrameworkArtifactID     = "functions-framework-invoker"
+	defaultFrameworkVersion        = "1.2.0"
 )
 
 func main() {
@@ -131,21 +131,11 @@ func classpath(ctx *gcp.Context) (string, error) {
 // mavenClasspath determines the --classpath when there is a pom.xml. This will consist of the jar file built
 // from the pom.xml itself, plus all jar files that are dependencies mentioned in the pom.xml.
 func mavenClasspath(ctx *gcp.Context) (string, error) {
-
 	mvn := "mvn"
-
 	// If this project has the Maven Wrapper, we should use it
 	if ctx.FileExists("mvnw") {
 		mvn = "./mvnw"
 	}
-
-	command := []string{mvn, "--batch-mode", "dependency:copy-dependencies"}
-	if !ctx.Debug() && !devmode.Enabled(ctx) {
-		command = append(command, "--quiet")
-	}
-
-	// Copy the dependencies of the function (`<dependencies>` in pom.xml) into target/dependency.
-	ctx.Exec(command, gcp.WithUserAttribution)
 
 	// Extract the artifact/version coordinates from the user's pom.xml definitions.
 	// mvn help:evaluate is quite slow so we do it this way rather than calling it twice.
@@ -217,11 +207,6 @@ func installFunctionsFramework(ctx *gcp.Context, layer *libcnb.Layer) error {
 		}
 	}
 
-	mavenRepository := os.Getenv(env.MavenRepository)
-	if mavenRepository == "" {
-		mavenRepository = defaultMavenRepository
-	}
-
 	frameworkGroup := os.Getenv(env.FunctionFrameworkGroup)
 	if frameworkGroup == "" {
 		frameworkGroup = defaultFrameworkGroup
@@ -236,6 +221,14 @@ func installFunctionsFramework(ctx *gcp.Context, layer *libcnb.Layer) error {
 	frameworkVersion := os.Getenv(env.FunctionFrameworkVersion)
 	if frameworkVersion == "" {
 		frameworkVersion = defaultFrameworkVersion
+	}
+
+	mavenRepository := os.Getenv(env.MavenRepository)
+	if mavenRepository == "" {
+		mavenRepository = defaultMavenRepository
+		if strings.HasSuffix(frameworkVersion, "-SNAPSHOT") {
+			mavenRepository = defaultMavenSnapshotRepository
+		}
 	}
 
 	artifact := fmt.Sprintf("%s-jar-with-dependencies.jar", frameworkArtifactID)

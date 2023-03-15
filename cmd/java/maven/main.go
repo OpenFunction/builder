@@ -21,11 +21,13 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/GoogleCloudPlatform/buildpacks/pkg/devmode"
 	"github.com/GoogleCloudPlatform/buildpacks/pkg/env"
 	gcp "github.com/GoogleCloudPlatform/buildpacks/pkg/gcpbuildpack"
+	"github.com/GoogleCloudPlatform/buildpacks/pkg/java"
 )
 
 const (
@@ -51,6 +53,15 @@ func detectFn(ctx *gcp.Context) (gcp.DetectResult, error) {
 }
 
 func buildFn(ctx *gcp.Context) error {
+	m2CachedRepo := ctx.Layer(m2Layer, gcp.CacheLayer, gcp.LaunchLayerIfDevMode)
+	java.CheckCacheExpiration(ctx, m2CachedRepo)
+	homeM2 := filepath.Join(os.Getenv("HOME"), ".m2")
+	// Symlink the m2 layer into ~/.m2. If ~/.m2 already exists, delete it first.
+	// If it exists as a symlink, RemoveAll will remove the link, not anything it's linked to.
+	// We can't just use `-Dmaven.repo.local`. It does set the path to `m2/repo` but it fails
+	// to set the path to `m2/wrapper` which is used by mvnw to download Maven.
+	ctx.RemoveAll(homeM2)
+	ctx.Symlink(m2CachedRepo.Path, homeM2)
 
 	addJvmConfig(ctx)
 
@@ -69,7 +80,7 @@ func buildFn(ctx *gcp.Context) error {
 
 	ctx.Exec([]string{mvn, "-v"}, gcp.WithUserAttribution)
 
-	command := []string{mvn, "clean", "package", "--batch-mode", "-DskipTests", "-Dhttp.keepAlive=false"}
+	command := []string{mvn, "clean", "package", "dependency:copy-dependencies", "--batch-mode", "-DskipTests", "-Dhttp.keepAlive=false"}
 
 	if buildArgs := os.Getenv(env.BuildArgs); buildArgs != "" {
 		if strings.Contains(buildArgs, "maven.repo.local") {
