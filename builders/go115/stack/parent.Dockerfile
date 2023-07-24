@@ -35,7 +35,7 @@ LABEL io.buildpacks.stack.id=${stack_id}
 RUN groupadd cnb --gid ${cnb_gid} && \
   useradd --uid ${cnb_uid} --gid ${cnb_gid} -m -s /bin/bash cnb
 
-RUN curl --fail --show-error --silent --location --retry 3 https://golang.org/dl/go1.15.linux-amd64.tar.gz | tar xz --directory /usr/local/ --strip-components=1
+RUN curl --fail --show-error --silent --location --retry 3 https://go.dev/dl/go1.15.linux-amd64.tar.gz | tar xz --directory /usr/local/ --strip-components=1
 
 ENV CNB_USER_ID=${cnb_uid}
 ENV CNB_GROUP_ID=${cnb_gid}
