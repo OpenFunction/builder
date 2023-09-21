@@ -23,14 +23,14 @@ build_java() {
   mkdir "$dir"
   ls builders/java/ | grep -v 'java.*' | xargs -i cp -r builders/java/{} "$dir"/
 
-  sed -i -e "s/< JAVA_VERSION >/${java_version}/g" "$dir"/builder.toml
-  sed -i -e "s/< JAVA_VERSION >/${java_version}/g" "$dir"/BUILD.bazel
-  sed -i -e "s/< JAVA_VERSION >/${java_version}/g" "$dir"/stack/build.sh
-  sed -i -e "s/< JAVA_VERSION >/${java_version}/g" "$dir"/stack/parent.Dockerfile
+  sed -i -e "s#< JAVA_VERSION >#${java_version}#g" "$dir"/builder.toml
+  sed -i -e "s#< JAVA_VERSION >#${java_version}#g" "$dir"/BUILD.bazel
+  sed -i -e "s#< JAVA_VERSION >#${java_version}#g" "$dir"/stack/build.sh
+  sed -i -e "s#< JAVA_VERSION >#${java_version}#g" "$dir"/stack/parent.Dockerfile
 
-  sed -i -e "s/< REGISTRY >/${docker_registry}/g" "$dir"/builder.toml
-  sed -i -e "s/< REGISTRY >/${docker_registry}/g" "$dir"/BUILD.bazel
-  sed -i -e "s/< REGISTRY >/${docker_registry}/g" "$dir"/stack/build.sh
+  sed -i -e "s#< REGISTRY >#${docker_registry}#g" "$dir"/builder.toml
+  sed -i -e "s#< REGISTRY >#${docker_registry}#g" "$dir"/BUILD.bazel
+  sed -i -e "s#< REGISTRY >#${docker_registry}#g" "$dir"/stack/build.sh
 
   if [[ -n "$run_image" ]]; then
     sed -ri "s/(run-image = )[^\n]*/\1\"${run_image}\"/" "$dir"/builder.toml
