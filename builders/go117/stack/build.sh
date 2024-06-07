@@ -31,7 +31,7 @@ set -euo pipefail
 DIR="$(dirname "$1")"
 LICENSES="$2"
 
-TAG="v2.4.0-1.17"
+TAG="v2.4.1-1.17"
 
 # Extract licenses.tar because it is symlinked, which Docker does not support.
 readonly TEMP="$(mktemp -d)"

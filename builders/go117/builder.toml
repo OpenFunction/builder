@@ -47,8 +47,8 @@ description = "Ubuntu 18 base image with buildpacks for .NET, Go, Java, Node.js,
 # Currently built with //builders/go117/stack/stack:build.
 [stack]
   id = "openfunction.go117"
-  build-image = "openfunctiondev/buildpacks-go117-build:v2.4.0-1.17"
-  run-image = "openfunctiondev/buildpacks-run-go:v2.4.0-1.17"
+  build-image = "openfunctiondev/buildpacks-go117-build:v2.4.1-1.17"
+  run-image = "openfunctiondev/buildpacks-run-go:v2.4.1-1.17"
 
 [lifecycle]
   version = "0.13.2"

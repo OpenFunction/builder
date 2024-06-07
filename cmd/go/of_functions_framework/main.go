@@ -33,7 +33,7 @@ import (
 const (
 	layerName                          = "functions-framework"
 	gopathLayerName                    = "gopath"
-	functionsFrameworkModule           = "github.com/OpenFunction/functions-framework-go"
+	functionsFrameworkModule           = "github.com/Mershab99/functions-framework-go"
 	functionsFrameworkPackage          = functionsFrameworkModule + "/framework"
 	functionsFrameworkFunctionsPackage = functionsFrameworkModule + "/functions"
 	appName                            = "serverless_function_app"
