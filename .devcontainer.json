@@ -4,6 +4,7 @@
   "features":{
     "ghcr.io/bartventer/arch-devcontainer-features/docker-in-docker:1": {},
     "ghcr.io/balazs23/devcontainers-features/bazel:": {}
-  }
+  },
+"runArgs": ["--init", "--privileged"]
 }
 
