@@ -3,7 +3,8 @@
   "build": {},
   "features":{
     "ghcr.io/devcontainers/features/docker-in-docker:2": {},
-    "ghcr.io/balazs23/devcontainers-features/bazel:": {}
+    "ghcr.io/balazs23/devcontainers-features/bazel:1": {},
+    "ghcr.io/audacioustux/devcontainers/pack-cli:1": {}
   },
 "runArgs": ["--init", "--privileged"]
 }

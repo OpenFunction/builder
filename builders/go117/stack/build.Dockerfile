@@ -13,8 +13,9 @@
 # limitations under the License.
 
 ARG from_image
-FROM ${from_image}
-COPY licenses/ /usr/local/share/licenses/buildpacks/
+#FROM ${from_image}
+FROM --platform=linux/amd64 go117common:latest
+#COPY licenses/ /usr/local/share/licenses/buildpacks/
 
 # build-essential is required by many usecases.
 # git is required for some project dependencies.
