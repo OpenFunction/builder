@@ -11,13 +11,20 @@
 | openfunction/builder-go:v2.3.0-1.16 | Buildpacks: v0.6.0, Go: 1.16 |                             [v0.3.0](https://github.com/OpenFunction/functions-framework-go/releases/tag/v0.3.0)                             |
 | openfunction/builder-go:v2.4.0-1.17 | Buildpacks: v0.6.0, Go: 1.17 |                             [v0.4.0](https://github.com/OpenFunction/functions-framework-go/releases/tag/v0.4.0)                             |
 
+### Note:
+
+Alternative to using the `USE_BAZEL_VERSION` flag, you may also add a `.bazelversion` file to the working directory (project root directory) with the tag `5.1.1` instead. **However** using the `USE_BAZEL_VERSION` flag will override the `.bazelversion` as specified.
+
+
 ## Build go117 stack
 
 ```shell
-bazel run //builders/go117/stack:build
+USE_BAZEL_VERSION=5.1.1 bazel run //builders/go117/stack:build
 # if you are using macOS
-bazel run --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //builders/go117/stack:build
+USE_BAZEL_VERSION=5.1.1 bazel run --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //builders/go117/stack:build
 ```
+
+
 
 This command creates two images:
 
@@ -29,9 +36,9 @@ openfunctiondev/buildpacks-go117-build:v2.4.0-1.17
 ## Build go117 builder
 
 ```shell
-bazel build //builders/go117:builder.image
+USE_BAZEL_VERSION=5.1.1 bazel build //builders/go117:builder.image
 # if you are using macOS
-bazel build --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //builders/go117:builder.image
+USE_BAZEL_VERSION=5.1.1 bazel build --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //builders/go117:builder.image
 ```
 
 This command creates one image:
@@ -51,7 +58,7 @@ docker push openfunction/builder-go:v2.4.0-1.17
 ## Test
 
 ```shell
-bazel test //builders/go117/acceptance/...
+USE_BAZEL_VERSION=5.1.1 bazel test //builders/go117/acceptance/...
 ```
 
 <details>
