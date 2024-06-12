@@ -11,6 +11,11 @@
 | openfunction/builder-go:v2.3.0-1.16 | Buildpacks: v0.6.0, Go: 1.16 |                             [v0.3.0](https://github.com/OpenFunction/functions-framework-go/releases/tag/v0.3.0)                             |
 | openfunction/builder-go:v2.4.0-1.17 | Buildpacks: v0.6.0, Go: 1.17 |                             [v0.4.0](https://github.com/OpenFunction/functions-framework-go/releases/tag/v0.4.0)                             |
 
+### Note:
+
+Alternative to using the `USE_BAZEL_VERSION` flag, you may also add a `.bazelversion` file to the working directory (project root directory) with the tag `5.1.1` instead. **However** using the `USE_BAZEL_VERSION` flag will override the `.bazelversion` as specified.
+
+
 ## Build go117 stack
 
 ```shell
@@ -18,6 +23,8 @@ USE_BAZEL_VERSION=5.1.1 bazel run //builders/go117/stack:build
 # if you are using macOS
 USE_BAZEL_VERSION=5.1.1 bazel run --platforms=@io_bazel_rules_go//go/toolchain:linux_amd64 //builders/go117/stack:build
 ```
+
+
 
 This command creates two images:
 
