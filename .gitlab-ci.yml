@@ -1,0 +1,73 @@
+stages:
+  - build
+  - tag_and_push
+
+variables:
+  PUSH_REPO: mershab99
+  USE_BAZEL_VERSION: 5.1.1
+  DOCKER_DIND_IMAGE: "docker:20.10.16-dind"
+  DOCKER_CLIENT_IMAGE: "docker:20.10.16"
+  TAR_FILE_FOLDER: ".docker/"
+  TAR_FILE_PATH: "/"
+  BUILD_DOCKER_IMAGE_VERSION: "v2.4.2-1.17"
+  BUILDPACKS_BASE_REPO: "openfunctiondev"
+  BUILDER_BASE_REPO: "openfunction"
+  IMAGE_RUN_NAME: "buildpacks-run-go"
+  IMAGE_BUILD_NAME: "buildpacks-go117-build"
+  IMAGE_BUILDER_NAME: "builder-go"
+
+before_script:
+  - apk add --no-cache bash curl
+
+build_images:
+  stage: build
+  image: gcr.io/cloud-builders/bazelisk
+  env:
+    BASE_IMAGE_BUILD: "$BUILDPACKS_BASE_REPO/$IMAGE_BUILD_NAME:BUILD_DOCKER_IMAGE_VERSION"
+    BASE_IMAGE_RUN: "$BUILDPACKS_BASE_REPO/$IMAGE_RUN_NAME:BUILD_DOCKER_IMAGE_VERSION"
+    BASE_IMAGE_BUILDER: "$BUILDER_BASE_REPO/$IMAGE_BUILDER_NAME:BUILD_DOCKER_IMAGE_VERSION"
+  services:
+    - name: "$DOCKER_DIND_IMAGE"
+  before_script:
+    - mkdir -p "$TAR_FILE_FOLDER"
+  script:
+    - USE_BAZEL_VERSION=$USE_BAZEL_VERSION bazel run //builders/go117/stack:build
+    - USE_BAZEL_VERSION=$USE_BAZEL_VERSION bazel build //builders/go117:builder.image
+      #- docker load < $IMAGE_BUILD
+      #- docker load < $IMAGE_RUN
+      #- docker load < $IMAGE_BUILDER
+    - docker save -o "$TAR_FILE_FOLDER""$TAR_FILE_PATH"build.tar $BASE_IMAGE_BUILD
+    - docker save -o "$TAR_FILE_FOLDER""$TAR_FILE_PATH"run.tar $BASE_IMAGE_RUN
+    - docker save -o "$TAR_FILE_FOLDER""$TAR_FILE_PATH"builder.tar $BASE_IMAGE_BUILDER
+  artifacts:
+    expire_in: 10 mins
+    paths:
+      - "$TAR_FILE_FOLDER/"
+
+tag_and_push_images:
+  stage: tag_and_push
+  image: "$DOCKER_CLIENT_IMAGE"
+  env:
+    BASE_IMAGE_BUILD: "$BUILDPACKS_BASE_REPO/$IMAGE_BUILD_NAME:BUILD_DOCKER_IMAGE_VERSION"
+    BASE_IMAGE_RUN: "$BUILDPACKS_BASE_REPO/$IMAGE_RUN_NAME:BUILD_DOCKER_IMAGE_VERSION"
+    BASE_IMAGE_BUILDER: "$BUILDER_BASE_REPO/$IMAGE_BUILDER_NAME:BUILD_DOCKER_IMAGE_VERSION"
+  services:
+    - name: "$DOCKER_DIND_IMAGE"
+  dependencies:
+    - build_images
+  before_script:
+    #- docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD"
+    # USE PUSH REPO AS USERNAME because on dockerhub it is the same
+    - docker login -u "$PUSH_REPO" -p "$PUSH_REGISTRY_PASSWORD"
+  script:
+    - docker load -i "$TAR_FILE_FOLDER""$TAR_FILE_PATH"build.tar
+    - docker load -i "$TAR_FILE_FOLDER""$TAR_FILE_PATH"run.tar
+    - docker load -i "$TAR_FILE_FOLDER""$TAR_FILE_PATH"builder.tar
+    - docker tag $BASE_IMAGE_BUILD $PUSH_REPO/$IMAGE_BUILD_NAME:$BUILD_DOCKER_IMAGE_VERSION
+    - docker tag $IMAGE_RUN $PUSH_REPO/$IMAGE_RUN_NAME:$BUILD_DOCKER_IMAGE_VERSION
+    - docker tag $IMAGE_BUILDER $PUSH_REPO/$IMAGE_BUILDER_NAME:$BUILD_DOCKER_IMAGE_VERSION
+    - docker push $PUSH_REPO/$IMAGE_BUILD_NAME:$BUILD_DOCKER_IMAGE_VERSION
+    - docker push $PUSH_REPO/$IMAGE_RUN_NAME:$BUILD_DOCKER_IMAGE_VERSION
+    - docker push $PUSH_REPO/$IMAGE_BUILDER_NAME:$BUILD_DOCKER_IMAGE_VERSION
+    - echo "Successfully tagged and pushed images: $PUSH_REPO/$IMAGE_BUILD_NAME:$BUILD_DOCKER_IMAGE_VERSION, $PUSH_REPO/$IMAGE_RUN_NAME:$BUILD_DOCKER_IMAGE_VERSION, $PUSH_REPO/$IMAGE_BUILDER_NAME:$BUILD_DOCKER_IMAGE_VERSION"
+
