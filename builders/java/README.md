@@ -1,5 +1,12 @@
 ## Build builder of java
 
+
+Required soft on your linux
+```shell 
+bazel4 
+python3 
+```
+
 Use the follow command to build a java builder.
 
 ```shell
