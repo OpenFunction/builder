@@ -1,4 +1,4 @@
-aiohttp==3.7.4
+aiohttp==3.13.3
 async-timeout==3.0.1
 attrs==19.3.0
 cachetools==4.1.1
@@ -31,7 +31,7 @@ requests==2.24.0
 rsa==4.7
 six==1.15.0
 uritemplate==3.0.1
-urllib3==1.26.5
-Werkzeug==1.0.1
+urllib3==2.6.3
+Werkzeug==3.1.5
 wrapt==1.12.1
 yarl==1.5.1
