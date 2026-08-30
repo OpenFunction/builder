@@ -3,7 +3,7 @@
     "gcp-build": "tsc function.ts"
   },
   "dependencies": {
-    "@google-cloud/functions-framework": "^1.0.0"
+    "@google-cloud/functions-framework": "^5.0.0"
   },
   "devDependencies": {
     "typescript": "^3.7.2"
